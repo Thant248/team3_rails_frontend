@@ -7,46 +7,32 @@
 class MemberInvitationController < ApplicationController
   def new
     retrievehome
+    @m_channels ||= []
   end
 
-  memberinvite
-  {
-    "m_invite": {
-      "email": email,
-      "channel_id": channelID,
-      "workspace_id": workSpace
-    }
-  }
 
   def invite
     #check unlogin user
     # checkuser
-
-    puts params[:session][:email].nil?
-    puts params[:session][:channelid][1].nil?
-    puts session[:workspace_id]
-    @user = MUser.joins("INNER JOIN t_user_workspaces ON t_user_workspaces.userid = m_users.id").where("t_user_workspaces.workspaceid = ? and m_users.email = ?", session[:workspace_id], params[:session][:email])
-    
-    if @user.size > 0
-      flash[:danger] = "Email is already member."
+    retrievehome
+    email = params[:session][:email]
+    channel_id = params[:session][:channel_id][1] # Corrected typo here
+  
+    data = {
+      "email": email,
+      "channel_id": channel_id,
+      "workspace_id": session[:workspace_id]
+    }
+  
+    result = post_data("/memberinvite", {m_invite: data})
+    if result.nil?
+      flash.now[:danger] = 'Member invite failed'
       redirect_to memberinvite_url
     else
-      if params[:session][:channelid][1].nil? || params[:session][:channelid][1] == ""
-        flash[:danger] = "Please Select Channel."
-        redirect_to memberinvite_url
-      elsif params[:session][:email].nil? || params[:session][:email] == ""
-        flash[:danger] = "Please Enter Eamil."
-        redirect_to memberinvite_url
-      else
-        @i_user = MUser.new
-        @i_user.email = params[:session][:email]
-        @i_channel = MChannel.find_by(id: params[:session][:channelid][1])
-        @i_workspace = MWorkspace.find_by(id: session[:workspace_id])
-
-        UserMailer.member_invite(@i_user, @i_workspace, @i_channel).deliver_now
-        flash[:info] = "Invitation is success."
-        redirect_to home_url
-      end
+      flash.now[:success] = 'Member has been successfully invited'
+      redirect_to home_url
     end
   end
+  
+  
 end

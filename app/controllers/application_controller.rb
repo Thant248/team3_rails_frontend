@@ -7,12 +7,15 @@ class ApplicationController < ActionController::Base
 
   def retrievehome
     response = get_data('/main')
-    
+
+    @m_channels = MChannel.new
+
     @current_user = response["current_user"]
     @m_user = @current_user["name"]
     @current_user_id = @current_user["id"]
     @current_user_admin = @current_user["admin"]
     @workspace_name = response["m_workspace"]["workspace_name"]
+    @workspace_id = response["m_workspace"]["id"]
     # Add more instance variables if needed
     @m_users = response["m_users"]
     @m_channels = response["m_channels"]
@@ -27,6 +30,7 @@ class ApplicationController < ActionController::Base
     session[:m_p_channels] = response["m_p_channels"]
     session[:m_channelsids] = response["m_channelsids"]
     session[:m_user] = @current_user["name"]
+    session[:workspace_id] = @workspace_id
   end
 
   def retrieve_direct_message

@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   get 'mentionlists' => 'mention_lists#show'
   get 'allunread' => 'all_unread#show'
   get 'usermanage' => 'user_manage#usermanage'
+  get 'memberinvite' => 'member_invitation#new'
+  post 'memberinvite' => 'member_invitation#invite'
   
 
   # ログイン後
