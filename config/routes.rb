@@ -7,6 +7,11 @@ Rails.application.routes.draw do
   get'workspace' => 'm_workspaces#new'
   get 'signin' =>  'sessions#new'
   post 'signin' =>  'sessions#create'
+  get 'starlists' => 'star_lists#show'
+  get 'thread' => 'thread#show'
+  get 'mentionlists' => 'mention_lists#show'
+  get 'allunread' => 'all_unread#show'
+  get 'usermanage' => 'user_manage#usermanage'
   
 
   # ログイン後

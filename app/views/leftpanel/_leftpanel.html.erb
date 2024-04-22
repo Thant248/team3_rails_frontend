@@ -22,15 +22,15 @@
                             </div>
                         </ul>
                         <li class="form-inline my-0 my-lg-0">
-                            <a href="#" class="fa fa-comments">スレッド</a>
-                        </li>
-                        <li class="form-inline my-0 my-lg-0">
-                            <a href="#" class="fa fa-star">スター</a>
-                        </li>
-                        <li class="form-inline my-0 my-lg-0">
-                            <a href="#" class="fas fa-at">アクティピテイ</a>
-                        </li>
-                        <% if @current_user['admin'] == true %>
+						<%= link_to "スレッド" , thread_url, class: 'fa fa-comments' %>
+					</li>
+					<li class="form-inline my-0 my-lg-0">
+						<%= link_to "スター" , starlists_url,class: 'fa fa-star' %>
+					</li>
+					<li class="form-inline my-0 my-lg-0">
+						<%= link_to "アクティピテイ" , mentionlists_url, class: 'fas fa-at'%>
+					</li>
+                        <% if @current_user_admin == true %>
                             <li class="form-inline my-0 my-lg-0">
                                 <a href="#" class="fa fa-edit">ユーザ管理</a>
                             </li>
