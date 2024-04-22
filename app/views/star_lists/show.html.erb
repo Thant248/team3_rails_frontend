@@ -1,0 +1,68 @@
+<% provide(:title, 'Star') %>
+<div id="main">
+
+  <h1>Star Lists</h1>
+
+  <div>
+    <h2 class="style1">Direct Star Lists</h2>
+
+    <% @direct_star.each_with_index do |direct_star, index| %>
+      <p class="style21"><%= index + 1 %></p>
+      <p class="style22"><%= direct_star['name'] %></p>
+      <p class="style23"><%= direct_star['created_at'] %></p>
+      <p class="style24"></p> 
+      <%= link_to "",  "", class:'fas fa-star'%>
+      <p class="style3"> -->  <%= direct_star['directmsg'] %></p>
+      <hr>
+    <% end %>
+  </div>
+
+  <div>
+    <h2 class="style1">Direct Threads Star Lists</h2>
+
+    <% @direct_star_thread.each_with_index do |direct_star_thread, index| %>
+      <p class="style21"><%= index + 1 %></p>
+      <p class="style22"><%= direct_star_thread['name'] %></p>
+      <p class="style23"><%= direct_star_thread['created_at'] %></p>
+      <p class="style24"></p> 
+      <%= link_to "",  "", class:'fas fa-star'%>
+      <p class="style3"> -->  <%= direct_star_thread['directthreadmsg'] %></p>
+      <hr>
+    <% end %>
+  </div>
+
+  <div>
+    <h2 class="style1">Group Star Lists</h2>
+
+    <% @group_star.each_with_index do |group_star, index| %>
+      <h4 class="style2"><%= group_star['channel_name'] %></h4>
+      <p class="style21"><%= index + 1 %></p>
+      <p class="style22"><%= group_star['name'] %></p>
+      <p class="style23"><%= group_star['created_at'] %></p>
+      <p class="style24"></p> 
+      <%= link_to "",  "", class:'fas fa-star'%>
+      <p class="style3"> -->  <%= group_star['groupmsg'] %></p>
+      <hr>
+    <% end %>
+  </div>
+
+  <div>
+    <h2 class="style1">Group Thread Star Lists</h2>
+
+    <% @group_star_thread.each_with_index do |group_star_thread, index| %>
+      <h4 class="style2"><%= group_star_thread['channel_name'] %></h4>
+      <p class="style21"><%= index + 1 %></p>
+      <p class="style22"><%= group_star_thread['name'] %></p>
+      <p class="style23"><%= group_star_thread['created_at'] %></p>
+      <p class="style24"></p> 
+      <%= link_to "",  "", class:'fas fa-star'%>
+      <p class="style3"> -->  <%= group_star_thread['groupthreadmsg'] %></p>
+      <hr>
+    <% end %>
+  </div>
+
+</div>
+
+<div>
+  <%= render 'leftpanel/leftpanel' %>
+</div>
