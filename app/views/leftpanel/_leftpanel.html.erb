@@ -1,0 +1,127 @@
+<div id="mySidenav" class="sidenav">
+    <nav class="navbar justify-content-between dropright">
+        <div class="btn-group dropright list-group nav">
+            <span class="cc list-group-item list-group-item-action "><%= @workspace_name %></span>
+            <span class="cc list-group-item list-group-item-action "><%= @m_user %></span>
+        </div>
+    </nav>
+
+    <div class="wrapper">
+        <div class="row">
+            <div class="col-sm-3">
+                <nav id="sidebar">
+                    <ul class="list-unstyled components">
+                        <ul class="countnumber">
+                            <div id="allcount">
+                                <li class="countnumberone">
+                                    <a href="#" class="fa fa-align-justify">全未読</a>
+                                </li>
+                                <li class="countnumbertwo">
+                                    <%= @all_unread_count %>
+                                </li>
+                            </div>
+                        </ul>
+                        <li class="form-inline my-0 my-lg-0">
+                            <a href="#" class="fa fa-comments">スレッド</a>
+                        </li>
+                        <li class="form-inline my-0 my-lg-0">
+                            <a href="#" class="fa fa-star">スター</a>
+                        </li>
+                        <li class="form-inline my-0 my-lg-0">
+                            <a href="#" class="fas fa-at">アクティピテイ</a>
+                        </li>
+                        <% if @current_user['admin'] == true %>
+                            <li class="form-inline my-0 my-lg-0">
+                                <a href="#" class="fa fa-edit">ユーザ管理</a>
+                            </li>
+                        <% end %>
+                        <li class="form-inline my-0 my-lg-0">
+                            <a href="#" class="fa fa-plus-circle">メンバーを招待する</a>
+                        </li>
+                        <li>
+                            <a href="#" class="fa fa-plus-circle">チャンネル</a>
+                            <div id="channellists">
+                                <% @m_channels.each do |m_channel| %>
+                                    <% if session[:s_channel_id] != m_channel['id'].to_s %>
+                                        <ul class="countnumber">
+                                    <% else %>
+                                        <ul style="background-color: #2E86C1" class="countnumber">
+                                    <% end %>
+                                            <li class="countnumberone">
+                                                <% if m_channel['channel_status'] == true %>
+                                                    <span class="fas fa-hashtag"></span>
+                                                <% else %>
+                                                    <span class="fa fa-lock"></span>
+                                                <% end %>
+                                                <%= m_channel['channel_name'] %>
+                                            </li>
+                                            <% if m_channel['message_count'] > 0 %>
+                                                <li class="countnumbertwo">
+                                                    <%= m_channel['message_count'] %>
+                                                </li>
+                                            <% end %>
+                                        </ul>
+                                <% end %>
+                            </div>
+
+                            <div id="channelpubliclists">
+                                <% @m_p_channels.each do |m_channel| %>
+                                    <% unless @m_channelsids.include? m_channel['id'] %>    
+                                        <% if session[:s_channel_id] != m_channel['id'].to_s %>
+                                            <ul class="countnumber">
+                                        <% else %>
+                                            <ul style="background-color: #2E86C1" class="countnumber">
+                                        <% end %>                    
+                                                <li class="countnumberone">
+                                                    <% if m_channel['channel_status'] == true %>
+                                                        <span class="fas fa-hashtag"></span>
+                                                    <% else %>
+                                                        <span class="fa fa-lock"></span>
+                                                    <% end %>
+                                                    <%= m_channel['channel_name'] %>
+                                                </li>
+                                        </ul>
+                                    <% end %>
+                                <% end %>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="#" class="channel">ダイレクトメッセージ</a>                            
+                                <div id="userlists">
+                                    <ul class="countnumber">
+                                        <li class="countnumberone">
+                                            <span class="glyphicon glyphicon-user" style="word-spacing: -0.63em;color:#7AB900"></span>
+                                            <%= @m_user + "(自分)" %>
+                                        </li>
+                                        <% @m_users.each do |m_user| %>
+                                            <% if m_user['id'] != @current_user['id'] %>
+                                                <% if session[:s_user_id] != m_user['id'].to_s %>
+                                                    <ul class="countnumber">
+                                                <% else %>
+                                                    <ul style="background-color: #2E86C1" class="countnumber">
+                                                <% end %>
+                                                        <li class="countnumberone">
+                                                            <% if m_user['active_status'] == true %>
+                                                                <span class="glyphicon glyphicon-user" style="word-spacing: -0.63em; color: yellow;"></span>
+                                                            <% else %>
+                                                                <span class="glyphicon glyphicon-user" style="word-spacing: -0.63em;"></span>
+                                                            <% end %>
+                                                            <%= m_user['name'] %>
+                                                        </li>
+                                                        <% if @direct_msgcounts[m_user['id']] != 0 %> 
+                                                            <li class="countnumbertwo">
+                                                                <%= @direct_msgcounts[m_user['id']] %>
+                                                            </li>
+                                                        <% end %>
+                                                    </ul>
+                                            <% end %>
+                                        <% end %>
+                                    </ul>
+                                </div>
+                        </li>                       
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
