@@ -14,6 +14,11 @@ Rails.application.routes.draw do
   get 'usermanage' => 'user_manage#usermanage'
   get 'memberinvite' => 'member_invitation#new'
   post 'memberinvite' => 'member_invitation#invite'
+  get 'confirminvitation' => 'm_users#confirm'
+
+  get 'usermanage' => 'user_manage#usermanage'
+  get 'edit' => 'user_manage#edit'
+  get 'update' => 'user_manage#update'
   
 
   # ログイン後
@@ -27,6 +32,7 @@ Rails.application.routes.draw do
   delete 'logout' =>  'sessions#destroy'
 
   resources :m_workspaces, only: [:new, :create]
+  resources :m_users, only: [:create]
 
   
 

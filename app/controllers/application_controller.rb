@@ -26,9 +26,9 @@ class ApplicationController < ActionController::Base
 
     session[:current_user_id] = @current_user_id
     session[:m_channels] = response["m_channels"]
-    session[:m_users] = response["m_users"]
-    session[:m_p_channels] = response["m_p_channels"]
-    session[:m_channelsids] = response["m_channelsids"]
+    # session[:m_users] = response["m_users"]
+    # session[:m_p_channels] = response["m_p_channels"]
+    # session[:m_channelsids] = response["m_channelsids"]
     session[:m_user] = @current_user["name"]
     session[:workspace_id] = @workspace_id
   end

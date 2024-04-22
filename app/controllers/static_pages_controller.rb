@@ -6,28 +6,16 @@ class StaticPagesController < ApplicationController
   end
 
   def home    
-    # ここに必要なデータをAPIから取得する
-    response = get_data('/main')
-    
-    @current_user = response["current_user"]
-    @m_user = @current_user["name"]
-    @current_user_id = @current_user["id"]
-    @current_user_admin = @current_user["admin"]
-    @workspace_name = response["m_workspace"]["workspace_name"]
-    # Add more instance variables if needed
-    @m_users = response["m_users"]
-    @m_channels = response["m_channels"]
-    @m_p_channels = response["m_p_channels"]
-    @direct_msgcounts = response["direct_msgcounts"]
-    @all_unread_count = response["all_unread_count"]
-    @m_channelsids = response["m_channelsids"]
 
-    session[:current_user_id] = @current_user_id
-    session[:m_channels] = response["m_channels"]
-    session[:m_users] = response["m_users"]
-    session[:m_p_channels] = response["m_p_channels"]
-    session[:m_channelsids] = response["m_channelsids"]
-    session[:m_user] = @current_user["name"]
+    session.delete(:s_user_id)
+    session.delete(:s_channel_id)
+    session.delete(:s_direct_message_id)
+    session.delete(:s_group_message_id)
+    session.delete(:r_direct_size)
+    session.delete(:r_group_size)
+    
+    # ここに必要なデータをAPIから取得する
+    retrievehome
   end
 end
 

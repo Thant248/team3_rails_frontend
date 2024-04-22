@@ -1,0 +1,71 @@
+#Slack System
+#Direct Message Controller 
+#@Since 27/06/2019
+#Version 1.0.0
+
+class MUsersController < ApplicationController
+  
+  
+
+ 
+  def create
+      workspaceid = session[:confirm_workspace_id]
+      workSpaceName = session[:cofirm_ws_name]
+      channelName = session[:confirm_cs_name]
+      email = session[:confirm_email]
+      name = params[:m_user][:name]
+      password = params[:m_user][:password]
+      password_confirmation = params[:password_confirmation]
+
+      data = {
+        "m_user": {
+    "remember_digest": workSpaceName,
+    "profile_image": channelName,
+    "name": name,
+    "email": email,
+    "password": password,
+    "password_confirmation": password_confirmation,
+    "admin": false
+  },
+  "workspace_id": {"invite_workspaceid": workspaceid}
+      }
+      result = post_data("/confirm_login", data)
+
+      if result.nil?
+        flash.now[:danger] = 'User creation failed'
+        render 'confirm'
+      else
+        # Check user deactivation status here
+        flash.now[:success] = 'User has been successfully created'
+        redirect_to signin_path
+      end
+  end
+  
+  def confirm
+    #check login user
+    # checkloginuser
+
+     @m_workspace =  params[:workspaceid]
+     session[:confirm_workspace_id] = params[:workspaceid]
+     @m_channel = params[:channelid]
+     @email = params[:email]
+
+  
+
+     response = get_data("confirminvitation?workspaceid=#{@m_workspace}&channelid=#{@m_channel}&email=#{@email}")
+     @m_user = MUser.new 
+     @m_user.email = response['m_user']['email']
+     @m_user.remember_digest = response['m_user']['remember_digest']
+     @m_user.profile_image = response['m_user']['profile_image']
+
+     session[:cofirm_ws_name] = @m_user.remember_digest
+     session[:confirm_cs_name] = @m_user.profile_image
+     session[:confirm_email] = @m_user.email
+    # session[:invite_workspaceid] = params[:workspaceid]
+
+    # @m_user = MUser.new
+    
+    # @m_user.remember_digest = @m_workspace.workspace_name
+    # @m_user.profile_image = @m_channel.channel_name
+  end
+end
