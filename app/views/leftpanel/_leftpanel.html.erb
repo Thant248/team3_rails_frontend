@@ -14,7 +14,7 @@
                         <ul class="countnumber">
                             <div id="allcount">
                                 <li class="countnumberone">
-                                    <a href="#" class="fa fa-align-justify">全未読</a>
+                                    <%= link_to "全未読", allunread_url, class: 'fa fa-align-justify' %>
                                 </li>
                                 <li class="countnumbertwo">
                                     <%= @all_unread_count %>
