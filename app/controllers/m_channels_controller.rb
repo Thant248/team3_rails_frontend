@@ -30,10 +30,9 @@ class MChannelsController < ApplicationController
             }
             response = post_data('/m_channels',{m_channel: data})
 
-            if response.code.to_i == 200 
-              flash[:success] = "Channel created successfully."
+            
               redirect_to home_url 
-            end
+           
            
         end
       end
@@ -52,4 +51,33 @@ class MChannelsController < ApplicationController
         retrievehome
       end
 
+      def edit
+        @m_channel =  params[:id]
+          #call from ApplicationController for retrieve home data
+          retrievehome 
+      end
+
+      def update
+      
+
+            data = {
+              "channel_status": 1,
+              "channel_name": 'hello',
+              "m_workspace_id": session[:workspace_id]
+          }
+          response = put_data("/channelupdate?#{id=4}",{m_channel: data})
+          
+            redirect_to home_url
+          
+        
+      end
+
+      def delete
+        
+        channel_id =  params[:id]
+        response = delete_data("/m_channels/#{channel_id}")
+          redirect_to home_url 
+      end
+
+    
 end

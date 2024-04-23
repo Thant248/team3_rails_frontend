@@ -11,11 +11,11 @@
             <% if @m_channelsids.include?session[:s_channel_id].to_i%>
             <span>
                 <button type="button" class="btn btn-default btn-sm" style='font-size:15px; background-color: #F4F4F4'>
-                   
+                <%= link_to "Edit", channeledit_path(id: @s_channel['id'].to_i), class: 'fa fa-edit',  style: 'font-size:15px; color: black;'%> 
                 </button>
                 
                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" style='font-size:15px; background-color: #F4F4F4'>
-                  
+                <span class="glyphicon glyphicon-trash" style="font-weight:bold">Delete </span>
                 </button>
             </span>
             <% end%>
@@ -28,12 +28,12 @@
             <% if @t_group_message_datesize.include?t_group_message_date['created_date'] %>
                 <h2 class="style1"><%= t_group_message_date['created_date'] %></h2>
                 <% @t_group_messages.each do |t_group_message| %>
-                    <% if t_group_message_date.created_date.to_s == t_group_message.created_at.strftime("%F").to_s %>
+                    <% if t_group_message_date['created_date'].to_s == t_group_message['created_at'].to_time.strftime("%F").to_s %>
                         <p class="style21"><%= @count += 1 %></p>
 
                         <p class="style22"><%= t_group_message['name']%></p>
 
-                        # <p class="style23"><%= t_group_message.created_at.strftime("%I:%M%p")%></p>
+                        <p class="style23"><%= t_group_message['created_at'].to_time.strftime("%I:%M%p")%></p>
 
                         <p class="style24"><%= link_to t_group_message['count'],  t_group_message, class: 'fab fa-facebook-messenger'%></p>
 
@@ -68,7 +68,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-info btn-sm" style='font-size:15px;'>
-
+                <%= link_to "Delete", delete_channel_path(id: @s_channel['id'].to_i), class: 'glyphicon glyphicon-trash',  style: 'font-size:15px; color: white;'%>
             </button>
         </div>
       </div>
