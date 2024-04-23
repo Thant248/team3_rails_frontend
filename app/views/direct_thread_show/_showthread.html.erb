@@ -1,0 +1,66 @@
+
+<div id="main">
+    <div>
+    <div class="title">
+        <h2 class="style1"><%= @s_user['name']%> </h2>
+    </div>
+
+        <hr>
+
+        <p class="style21">1</p>
+
+        <p class="style22"><%= @sender_name%></p>
+        
+        <p class="style23"><%= @t_direct_message['created_at'] %>/<%= @t_direct_message['created_at'] %></p>
+                
+        <p class="style3"> -->  <%= @t_direct_message['directmsg']%></p>
+
+    </div>
+<hr>
+    <div class="txtmsg">
+        <% @count = 0 %>
+        <h2 class="style1">Reply</h2>
+        <hr>
+        
+        <% @t_direct_threads.each do |t_direct_thread| %>
+
+            <p class="style21"><%= @count += 1 %></p>
+
+            <p class="style22"><%= t_direct_thread['name']%></p>
+
+            <p class="style23"><%= t_direct_thread['created_at'] %>/<%= t_direct_thread['created_at'] %></p>
+
+            <p class="style24"></p>
+            
+            <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
+                    <%= link_to "", unstarthread_path(:id => t_direct_thread['id']), class:'fas fa-star' %></li>
+                <% else %>
+                    <%= link_to "",  starthread_path(:id => t_direct_thread['id']), class:'far fa-star' %></li>
+            <% end %> 
+            
+            <%= link_to "",  delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash'%>
+            <p class="style3"> -->  <%= t_direct_thread['directthreadmsg']%></p>
+                
+        <% end %>
+    </div>
+</div>
+
+    <div class = "textboxbg">
+        <div class="textbox">
+            <%= form_for(:session, url: directthreadmsg_path) do |f| %>
+                <div class="col-md-11">
+                    <%= f.text_field :message, class: 'form-control' %>
+                </div>
+                <div class="col-md-1">
+                    <%= f.submit "Send", class: "btn btn-primary" %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+<div>
+    <%= render 'leftpanel/leftpanel' %>
+</div>
+
+<script>
+    window.scrollTo(0,document.body.scrollHeight);
+</script>

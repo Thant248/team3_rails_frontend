@@ -32,7 +32,7 @@
           %>
         </p>
 
-        <p class="style24"><%= link_to t_direct_message['count'], t_direct_message, class: 'fab fa-facebook-messenger' %></p>
+        <p class="style24"><%= link_to t_direct_message['count'], t_direct_message_path(id: t_direct_message['id']), class: 'fab fa-facebook-messenger' %></p>
 
         <% if @t_direct_star_msgids.include?(t_direct_message['id']) %>
           <%= link_to "", unstar_path(id: t_direct_message['id']), class: 'fas fa-star' %>
@@ -44,6 +44,7 @@
 
         <p class="style3"> --> <%= t_direct_message['directmsg'] %></p>
         <hr>
+        
       <% end %>
     <% end %>
   </div>

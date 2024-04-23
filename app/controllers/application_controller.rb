@@ -46,6 +46,13 @@ class ApplicationController < ActionController::Base
   end
 
   def retrieve_direct_thread
+    
+    response = get_data("/directhread/#{session[:s_direct_message_id]}")
+    @s_user = response['s_user']
+    @t_direct_message = response['t_direct_message']
+    @t_direct_threads = response['t_direct_threads']
+    @t_direct_star_thread_msgids = response['t_direct_star_thread_msgids']
+    @sender_name = response['sender_name']
   end
 
   def retrieve_group_message
