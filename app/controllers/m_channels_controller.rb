@@ -37,4 +37,19 @@ class MChannelsController < ApplicationController
            
         end
       end
+
+      def show
+        session.delete(:s_user_id)
+        session.delete(:s_direct_message_id)
+        session.delete(:s_group_message_id)
+        session.delete(:r_direct_size)
+  
+        session[:s_channel_id] =  params[:id]
+  
+        session[:r_group_size] = 10
+        retrieve_group_message
+
+        retrievehome
+      end
+
 end
