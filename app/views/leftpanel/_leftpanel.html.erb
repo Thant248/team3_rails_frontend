@@ -52,9 +52,9 @@
                                         <% end %>
                                                 <li class="countnumberone">
                                                 <% if m_channel['channel_status'] == true%>
-                                                <%= link_to m_channel["channel_name"], m_channel, class: 'fas fa-hashtag' %>
+                                                <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]), class: 'fas fa-hashtag' %>
                                                 <% else%>
-                                                <%= link_to m_channel["channel_name"], m_channel , class: 'fa fa-lock'%>
+                                                <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]) , class: 'fa fa-lock'%>
                                                 <% end%>
                                                 </li>
                                                 <% if m_channel['message_count'] > 0 %>
@@ -76,9 +76,9 @@
                                             <% end %>                    
                                                     <li class="countnumberone">
                                                     <% if m_channel['channel_status'] == true%>
-                                                    <%= link_to m_channel["channel_name"], m_channel,  class: 'fas fa-hashtag' %>
+                                                    <%= link_to m_channel["channel_name"], m_channel_path(id: m_channel["id"]),  class: 'fas fa-hashtag' %>
                                                 <% else %>
-                                                    <%= link_to mm_channel["channel_name"], m_channel , class: 'fa fa-lock'%>
+                                                    <%= link_to mm_channel["channel_name"], m_channel_path(id: m_channel["id"]) , class: 'fa fa-lock'%>
                                                 <% end %>
                                                     </li>
                                             </ul>

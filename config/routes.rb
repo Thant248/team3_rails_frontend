@@ -22,6 +22,12 @@ Rails.application.routes.draw do
 
   get 'channelcreate' => 'm_channels#new'
   post 'channelcreate' => 'm_channels#create'
+  get 'refresh_group' => 'm_channels#refresh_group'
+
+  get 'channeledit' => 'm_channels#edit'
+  get 'delete_channel' => 'm_channels#delete'
+  post 'channelupdate'=> 'm_channels#update'
+
 
   get 'refresh_direct' => 'm_users#refresh_direct'
 
@@ -48,6 +54,7 @@ Rails.application.routes.draw do
 
   resources :m_workspaces, only: [:new, :create]
   resources :m_users, only: [:new, :create, :show, :refresh_direct]
+  resources :m_channels
 
 
 
