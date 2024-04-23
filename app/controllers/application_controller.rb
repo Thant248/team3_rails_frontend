@@ -56,6 +56,16 @@ class ApplicationController < ActionController::Base
   end
 
   def retrieve_group_message
+    response = get_data("/m_channels/#{session[:s_channel_id]}",)
+
+    @s_channel = response['retrieve_group_message']['s_channel']
+    @m_channel_users = response['retrieve_group_message']['m_channel_users']
+    @t_group_messages = response['retrieve_group_message']['t_group_messages']
+    @t_group_star_msgids = response['retrieve_group_message']['t_group_star_msgids']
+    @u_count = response['retrieve_group_message']['u_count']
+    @created_admin = response['retrieve_group_message']['created_admin']
+    @t_group_message_dates = response['retrieve_group_message']['t_group_message_date'] || []
+    @t_group_message_datesize = response['retrieve_group_message']['t_group_messaege_datesize'] || []
   end
 
   def retrieve_group_thread
