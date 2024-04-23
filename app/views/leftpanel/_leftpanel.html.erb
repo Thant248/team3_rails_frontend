@@ -42,7 +42,7 @@
                            
                         </li>
                         <li>
-                            <a href="#" class="fa fa-plus-circle">チャンネル</a>
+                        <%= link_to "チャンネル" , channelcreate_url,class: 'fa fa-plus-circle' %>
                             <div id="channellists">
                                 <% @m_channels.each do |m_channel| %>
                                     <% if session[:s_channel_id] != m_channel['id'].to_s %>
@@ -51,12 +51,11 @@
                                         <ul style="background-color: #2E86C1" class="countnumber">
                                     <% end %>
                                             <li class="countnumberone">
-                                                <% if m_channel['channel_status'] == true %>
-                                                    <span class="fas fa-hashtag"></span>
-                                                <% else %>
-                                                    <span class="fa fa-lock"></span>
-                                                <% end %>
-                                                <%= m_channel['channel_name'] %>
+                                            <% if m_channel['channel_status'] == true%>
+                                            <%= link_to m_channel["channel_name"], m_channel, class: 'fas fa-hashtag' %>
+                                            <% else%>
+                                            <%= link_to m_channel["channel_name"], m_channel , class: 'fa fa-lock'%>
+                                            <% end%>
                                             </li>
                                             <% if m_channel['message_count'] > 0 %>
                                                 <li class="countnumbertwo">
@@ -76,12 +75,11 @@
                                             <ul style="background-color: #2E86C1" class="countnumber">
                                         <% end %>                    
                                                 <li class="countnumberone">
-                                                    <% if m_channel['channel_status'] == true %>
-                                                        <span class="fas fa-hashtag"></span>
-                                                    <% else %>
-                                                        <span class="fa fa-lock"></span>
-                                                    <% end %>
-                                                    <%= m_channel['channel_name'] %>
+                                                <% if m_channel['channel_status'] == true%>
+                                                <%= link_to m_channel["channel_name"], m_channel,  class: 'fas fa-hashtag' %>
+                                            <% else %>
+                                                <%= link_to mm_channel["channel_name"], m_channel , class: 'fa fa-lock'%>
+                                            <% end %>
                                                 </li>
                                         </ul>
                                     <% end %>
