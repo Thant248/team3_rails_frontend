@@ -1,4 +1,5 @@
 class ThreadController < ApplicationController
+    include FaradayApiClient
     def show 
 
         session.delete(:s_user_id)

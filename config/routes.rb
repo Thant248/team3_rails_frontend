@@ -20,6 +20,13 @@ Rails.application.routes.draw do
   get 'edit' => 'user_manage#edit'
   get 'update' => 'user_manage#update'
 
+  get 'channelcreate' => 'm_channels#new'
+  post 'channelcreate' => 'm_channels#create'
+
+  get 'refresh_direct' => 'm_users#refresh_direct'
+
+  post 'directmsg' => 'direct_message#show'
+
   get 'refresh' => 'sessions#refresh'
   
 
@@ -30,12 +37,18 @@ Rails.application.routes.draw do
   # change_password
   get 'change_password' => 'change_password#new'
 
+
+  get 'star' => 't_direct_star_msg#create'
+  get 'unstar' => 't_direct_star_msg#destroy'
+  get 'delete_directmsg' => "direct_message#deletemsg"
+  get 'delete_directthread' => "direct_message#deletethread"
+
   # sessions
   delete 'logout' =>  'sessions#destroy'
 
   resources :m_workspaces, only: [:new, :create]
-  resources :m_users, only: [:create]
+  resources :m_users, only: [:new, :create, :show, :refresh_direct]
 
-  
+
 
 end

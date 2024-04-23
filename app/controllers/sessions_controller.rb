@@ -1,5 +1,6 @@
   class SessionsController < ApplicationController
-
+    include FaradayApiClient
+    
     def new
     end
 

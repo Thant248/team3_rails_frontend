@@ -43,9 +43,19 @@ module FaradayApiClient
   end
 
   def delete_data(path, data = {})
+    response = auth_conn.delete(path) do |request|
+      request.params.merge!(params)
+    end
+      handle_response(response)
   end
 
   def put_data(path, data = {})
+    response = auth_conn.put_data(path) do |request|
+      request.headers['Content-Type'] = 'application/json'
+      request.params.merge!(params)
+
+    end
+    handle_response(response)
   end
 
   private

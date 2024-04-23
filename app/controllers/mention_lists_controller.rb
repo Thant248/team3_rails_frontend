@@ -1,4 +1,5 @@
 class MentionListsController < ApplicationController
+  include FaradayApiClient
   def show
     #check login user
     #checkuser

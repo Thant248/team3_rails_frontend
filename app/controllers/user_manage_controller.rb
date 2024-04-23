@@ -1,4 +1,6 @@
 class UserManageController < ApplicationController
+  include FaradayApiClient
+  
   def usermanage
     #check unlogin user
     # checkuser

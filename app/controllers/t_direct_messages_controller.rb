@@ -1,13 +1,9 @@
-#Slack System
-#Direct Message Controller 
-#Authorname-KyawSanWin@CyberMissions Myanmar Company limited 
-#@Since 27/06/2019
-#Version 1.0.0
-
 class TDirectMessagesController < ApplicationController
+    include FaradayApiClient
+    
     def show
         #check unlogin user
-        checkuser
+        # checkuser
 
         session[:s_direct_message_id] =  params[:id]
 

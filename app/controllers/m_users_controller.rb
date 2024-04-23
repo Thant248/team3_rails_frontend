@@ -5,6 +5,7 @@
 
 class MUsersController < ApplicationController
   
+  include FaradayApiClient
   
 
  
@@ -67,5 +68,44 @@ class MUsersController < ApplicationController
     
     # @m_user.remember_digest = @m_workspace.workspace_name
     # @m_user.profile_image = @m_channel.channel_name
+  end
+
+  def show
+    #check unlogin user
+    # checkuser
+
+    session.delete(:s_channel_id)
+    session.delete(:s_group_message_id)
+    session.delete(:s_direct_message_id)
+    session.delete(:r_group_size)
+    
+    session[:s_user_id] =  params[:id]
+
+    session[:r_direct_size] =  10
+
+    @m_users = params[:id]
+    #call from ApplicationController for retrieve direct message data
+    retrieve_direct_message
+
+    #call from ApplicationController for retrieve home data
+    retrievehome
+  end
+
+  #Authorname-KyawSanWin@CyberMissions Myanmar Company limited 
+  def refresh_direct
+    #check unlogin user
+    # checkuser
+
+    if session[:r_direct_size].nil?
+      session[:r_direct_size] =  10
+    else
+      session[:r_direct_size] +=  10
+    end
+
+    #call from ApplicationController for retrieve direct message data
+    retrieve_direct_message
+
+    #call from ApplicationController for retrieve home data
+    retrievehome
   end
 end

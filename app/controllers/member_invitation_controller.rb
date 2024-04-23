@@ -5,6 +5,8 @@
 #Version 1.0.0
 
 class MemberInvitationController < ApplicationController
+  include FaradayApiClient
+  
   def new
     retrievehome
     @m_channels ||= []

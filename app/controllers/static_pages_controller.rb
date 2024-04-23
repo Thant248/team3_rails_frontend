@@ -14,6 +14,7 @@ class StaticPagesController < ApplicationController
     session.delete(:r_direct_size)
     session.delete(:r_group_size)
     
+    
     # ここに必要なデータをAPIから取得する
     retrievehome
   end
