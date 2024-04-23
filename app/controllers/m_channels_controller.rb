@@ -10,7 +10,8 @@ class MChannelsController < ApplicationController
         
        
         retrievehome
-      end
+     end
+
       def create
         #check unlogin user
         # checkuser
@@ -28,7 +29,7 @@ class MChannelsController < ApplicationController
                 "channel_name": params[:session][:channel_name],
                 "m_workspace_id": session[:workspace_id]
             }
-            response = post_data('/m_channels',{m_channel: data})
+            post_data('/m_channels',{m_channel: data})
 
             
               redirect_to home_url 
@@ -52,20 +53,21 @@ class MChannelsController < ApplicationController
       end
 
       def edit
-        @m_channel =  params[:id]
+        @m_channel =  session[:s_channel_id]
           #call from ApplicationController for retrieve home data
           retrievehome 
       end
 
       def update
-      
-
+        
+        channel_status = params[:session][:channel_status]
+        channel_name = params[:session][:channel_name]
             data = {
-              "channel_status": 1,
-              "channel_name": 'hello',
+              "channel_status": channel_status ,
+              "channel_name": channel_name,
               "m_workspace_id": session[:workspace_id]
           }
-          response = put_data("/channelupdate?#{id=4}",{m_channel: data})
+          post_data("/channelupdate?id=#{session[:s_channel_id]}",{m_channel: data})
           
             redirect_to home_url
           
@@ -74,8 +76,8 @@ class MChannelsController < ApplicationController
 
       def delete
         
-        channel_id =  params[:id]
-        response = delete_data("/m_channels/#{channel_id}")
+        channel_id =  session[:s_channel_id]
+         delete_data("/m_channels/#{channel_id}")
           redirect_to home_url 
       end
 
