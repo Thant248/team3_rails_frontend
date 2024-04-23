@@ -35,6 +35,7 @@
 
     def refresh
       unless session[:user_id].nil?
+        retrievehome
       end
     end
   end

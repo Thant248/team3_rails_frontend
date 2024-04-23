@@ -93,9 +93,9 @@
                                 <div id="userlists">
                                     <ul class="countnumber">
                                         <li class="countnumberone">
-                                            <span class="glyphicon glyphicon-user" style="word-spacing: -0.63em;color:#7AB900"></span>
-                                            <%= @m_user + "(自分)" %>
+                                            <%= link_to @m_user +"(自分)", "#", class: 'glyphicon glyphicon-user', style: 'word-spacing: -0.63em;color:#7AB900'%>
                                         </li>
+                                        <% @count = 0 %>
                                         <% @m_users.each do |m_user| %>
                                             <% if session[:current_user_id] != m_user['id'] %>
                                                 <% if session[:current_user_id] != m_user['id'].to_s %>
@@ -105,19 +105,20 @@
                                                 <% end %>
                                                         <li class="countnumberone">
                                                             <% if m_user['active_status'] == true %>
-                                                                <span class="glyphicon glyphicon-user" style="word-spacing: -0.63em; color: yellow;"></span>
+                                                            <%= link_to m_user['name'], m_user, class: 'glyphicon glyphicon-user', style: 'word-spacing: -0.63em; color: yellow;'%> 
                                                             <% else %>
-                                                                <span class="glyphicon glyphicon-user" style="word-spacing: -0.63em;"></span>
+                                                            <%= link_to m_user['name'], m_user, class: 'glyphicon glyphicon-user', style: 'word-spacing: -0.63em;'%> 
                                                             <% end %>
-                                                            <%= m_user['name'] %>
+                                                           
                                                         </li>
-                                                        <% if @direct_msgcounts[m_user['id']] != 0 %> 
+                                                        <% if @direct_msgcounts[@count] != 0 %> 
                                                             <li class="countnumbertwo">
-                                                                <%= @direct_msgcounts[m_user['id']] %>
+                                                                <%= @direct_msgcounts[@count] %>
                                                             </li>
                                                         <% end %>
                                                     </ul>
                                             <% end %>
+                                            <% @count += 1 %>
                                         <% end %>
                                     </ul>
                                 </div>

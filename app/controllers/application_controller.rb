@@ -34,6 +34,15 @@ class ApplicationController < ActionController::Base
   end
 
   def retrieve_direct_message
+    response = get_data("/m_users/#{params[:id]}")
+    @m_user = response['m_user']
+    @s_user = response['s_user']
+    @t_direct_messages = response['t_direct_messages']
+    @temp_direct_star_msgids = response['temp_direct_star_msgids']
+    @t_direct_star_msgids = response['t_direct_star_msgids']
+    @t_direct_message_dates =  response['t_direct_message_dates']
+    @t_direct_message_datesize = response['t_direct_message_datesize']
+
   end
 
   def retrieve_direct_thread

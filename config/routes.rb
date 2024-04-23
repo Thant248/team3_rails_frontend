@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   get 'usermanage' => 'user_manage#usermanage'
   get 'edit' => 'user_manage#edit'
   get 'update' => 'user_manage#update'
+
+  get 'refresh' => 'sessions#refresh'
   
 
   # ログイン後
