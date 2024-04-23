@@ -43,7 +43,7 @@ module FaradayApiClient
   end
 
   def delete_data(path, data = {})
-    response = auth_conn.delete(path) do |request|
+     auth_conn.delete(path) do |request|
       request.params.merge!(params)
     end
       
