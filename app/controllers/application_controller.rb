@@ -75,6 +75,15 @@ class ApplicationController < ActionController::Base
   end
 
   def retrieve_group_thread
+    response = get_data("/t_group_messages/#{session[:s_group_message_id]}?s_channel_id=#{session[:s_channel_id]}")
+    @s_channel=response['retrieveGroupThread']['s_channel']
+    @m_channel_users=response['retrieveGroupThread']['m_channel_users']
+    @t_group_message=response['retrieveGroupThread']['t_group_message']
+    @send_user=response['retrieveGroupThread']['send_user']
+    @t_group_threads=response['retrieveGroupThread']['t_group_threads']
+    @temp_group_star_thread_msgids=response['retrieveGroupThread']['temp_group_star_thread_msgids']
+    @t_group_star_thread_msgids=response['retrieveGroupThread']['t_group_star_thread_msgids']
+    @u_count=response['retrieveGroupThread']['u_count']
   end
 
   def checkuser

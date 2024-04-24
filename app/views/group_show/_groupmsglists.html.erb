@@ -41,7 +41,7 @@
 
                         <p class="style23"><%= t_group_message['created_at'].to_time.strftime("%I:%M%p")%></p>
 
-                        <p class="style24"><%= link_to t_group_message['count'],  t_group_message, class: 'fab fa-facebook-messenger'%></p>
+                        <p class="style24"><%= link_to t_group_message['count'],  t_group_message_path(id: t_group_message['id']), class: 'fab fa-facebook-messenger'%></p>
 
                         <% if @t_group_star_msgids.include? t_group_message['id'] %>
                         <%= link_to "",  groupunstar_path(:id => t_group_message['id']), class:'fas fa-star' %>
