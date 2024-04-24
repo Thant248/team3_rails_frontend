@@ -1,0 +1,91 @@
+
+<div id="main">
+
+<div>
+    <div class="title">
+    <h2 class="style1"><%= @s_channel['channel_name']%><sapn style="margin-left: 20px"> <i class="material-icons" >&#xe7fc;</i> <%= link_to @u_count,  channeluser_url %></span></h2>
+    </div>
+    
+    <hr>
+
+    <p class="style21">1</p>
+
+    <p class="style22"><%= @send_user['name']%></p>
+    
+    <p class="style23"><%= @t_group_message['created_at'].to_time.strftime("%F") %>/<%= @t_group_message['created_at'].to_time.strftime("%I:%M%p") %></p>
+            
+    <p class="style3"> -->  <%= @t_group_message['groupmsg']%></p>
+
+</div>
+
+<hr>
+
+    <div class="txtmsg">
+        <% @count = 0 %>
+        <h2 class="style1">Reply</h2>
+        <hr>
+        
+        <% @t_group_threads.each do |t_group_thread| %>
+
+            <p class="style21"><%= @count += 1 %></p>
+
+            <p class="style22"><%= t_group_thread['name']%></p>
+
+            <p class="style23"><%= t_group_thread['created_at'].to_time.strftime("%F") %>/<%= t_group_thread['created_at'].to_time.strftime("%I:%M%p") %></p>
+
+            <p class="style24"></p>
+            
+            <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
+                <%= link_to "", groupunstarthread_path(:id => t_group_thread['id']), class:'fas fa-star' %></li>
+            <% else %>
+                <%= link_to "",  groupstarthread_path(:id => t_group_thread['id']), class:'far fa-star'%></li>
+            <% end %> 
+            <%= link_to "",  delete_groupthread_path(:id => t_group_thread['id']), class:'glyphicon glyphicon-trash'%>
+            <p class="style3"> -->  <%= t_group_thread['groupthreadmsg']%></p>
+                
+        <% end %>
+    </div>
+</div>
+<div class = "textboxbg">
+    <div class="textbox">
+        <% if @m_channelsids.include?session[:s_channel_id].to_i%>
+            <%= form_for(:session, url: groupthreadmsg_path) do |f| %>
+                <div class="col-md-11">
+                    <%= f.text_field :message, class: 'form-control', data: { autocomplete_source: @m_channel_users.map { |t| 
+                    { :label => '@' + t['name']} } }, id: 'tags' %>
+                </div>
+                <div class="col-md-1">
+                    <%= f.submit "Send", class: "btn btn-primary" %>
+                </div>
+                <%= f.hidden_field :memtion_name, class: 'memtion_name' %>
+            <% end %>
+        <% else %>
+            <div style="padding-bottom: 20px">
+            <%= link_to "Join into channel", channeluserjoin_path(userid: session[:user_id]), class: 'btn btn-primary'%>
+            </div>
+        <% end %>
+    </div>
+</div>
+
+<div>
+    <%= render 'leftpanel/leftpanel' %>
+</div>
+
+<script>
+ $( "#tags" ).autocomplete({
+      source: $('#tags').data('autocomplete-source'),
+      position: {
+        my: "left bottom",
+        at: "left top",
+    },
+    select: function(event, ui) {
+      event.preventDefault();
+      this.value = ui.item.label
+      $('.memtion_name').val(ui.item.value)
+    }
+    });
+</script>
+
+<script>
+    window.scrollTo(0,document.body.scrollHeight);
+</script>
