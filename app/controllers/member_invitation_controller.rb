@@ -8,6 +8,9 @@ class MemberInvitationController < ApplicationController
   include FaradayApiClient
   
   def new
+    #check unlogin user
+    checkuser
+    
     retrievehome
     @m_channels ||= []
   end

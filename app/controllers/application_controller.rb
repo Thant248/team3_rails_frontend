@@ -10,8 +10,6 @@ class ApplicationController < ActionController::Base
 
     @m_channels = MChannel.new
 
-    
-
     @current_user = response["current_user"]
     @m_usering = MUser.new(@current_user)
     @email = @m_usering.email
@@ -107,7 +105,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def check_login_user
+  def checkloginuser
     unless session[:workspace_id].nil?
       redirect_to home_url
     end

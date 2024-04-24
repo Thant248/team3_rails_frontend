@@ -1,7 +1,8 @@
 class MChannelsController < ApplicationController
+  include FaradayApiClient
   def new
       #check unlogin user
-      # checkuser
+       checkuser
   
       session.delete(:s_user_id)
       session.delete(:s_channel_id)
@@ -10,8 +11,11 @@ class MChannelsController < ApplicationController
       
      
       retrievehome
-   end
+  end
+
    def refresh_group
+    checkuser
+
     if session[:r_group_size].nil?
       session[:r_group_size] =  10
     else
@@ -27,7 +31,7 @@ class MChannelsController < ApplicationController
 
     def create
       #check unlogin user
-      # checkuser
+       checkuser
   
       #call from ApplicationController for retrieve home data
       retrievehome
@@ -43,15 +47,13 @@ class MChannelsController < ApplicationController
               "m_workspace_id": session[:workspace_id]
           }
           post_data('/m_channels',{m_channel: data})
-
-          
-            redirect_to home_url 
-         
-         
+          redirect_to home_url   
       end
     end
 
     def show
+      checkuser
+
       session.delete(:s_user_id)
       session.delete(:s_direct_message_id)
       session.delete(:s_group_message_id)
@@ -60,6 +62,7 @@ class MChannelsController < ApplicationController
       session[:s_channel_id] =  params[:id]
 
       session[:r_group_size] = 10
+
       retrieve_group_message
 
       retrievehome
@@ -72,7 +75,8 @@ class MChannelsController < ApplicationController
     end
 
     def update
-      
+      checkuser
+
       channel_status = params[:session][:channel_status]
       channel_name = params[:session][:channel_name]
           data = {
@@ -88,7 +92,8 @@ class MChannelsController < ApplicationController
     end
 
     def delete
-      
+      checkuser
+
       channel_id =  session[:s_channel_id]
        delete_data("/m_channels/#{channel_id}")
         redirect_to home_url 

@@ -6,8 +6,6 @@
 class MUsersController < ApplicationController
   
   include FaradayApiClient
-  
-
  
   def create
       workspaceid = session[:confirm_workspace_id]
@@ -63,8 +61,7 @@ class MUsersController < ApplicationController
         "password": password,
         "password_confirmation": password_confirmation
       }
-      puts password 
-      puts password_confirmation
+      
       put_data("/m_users/#{session[:current_user_id]}", {m_user: data})
       flash[:success] = "Change Password Successful."
       redirect_to home_url
@@ -101,7 +98,7 @@ class MUsersController < ApplicationController
 
   def show
     #check unlogin user
-    # checkuser
+     checkuser
 
     session.delete(:s_channel_id)
     session.delete(:s_group_message_id)
@@ -123,7 +120,7 @@ class MUsersController < ApplicationController
   #Authorname-KyawSanWin@CyberMissions Myanmar Company limited 
   def refresh_direct
     #check unlogin user
-    # checkuser
+     checkuser
 
     if session[:r_direct_size].nil?
       session[:r_direct_size] =  10

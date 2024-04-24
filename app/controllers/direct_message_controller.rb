@@ -5,9 +5,11 @@
 #Version 1.0.0
 
 class DirectMessageController < ApplicationController
+  include FaradayApiClient
+
   def show
     #check unlogin user
-    # checkuser
+    checkuser
 
     if session[:s_user_id].nil?
       redirect_to home_url
@@ -18,7 +20,7 @@ class DirectMessageController < ApplicationController
         "user_id": session[:current_user_id],
         "s_user_id": session[:s_user_id]
       };
-      puts message
+     
       post_data("/directmsg", data)
      
       redirect_to m_user_path(session[:s_user_id])
@@ -27,7 +29,7 @@ class DirectMessageController < ApplicationController
 
   def showthread
     #check unlogin user
-    # checkuser
+     checkuser
 
     if session[:s_direct_message_id].nil?
       unless session[:s_user_id].nil?
@@ -50,22 +52,22 @@ class DirectMessageController < ApplicationController
 
   def deletemsg
     #check unlogin user
-    # checkuser
+    checkuser
+
     if session[:s_user_id].nil?
       redirect_to home_url
     else
       get_data("/delete_directmsg?id=#{params[:id]}")
       redirect_to m_user_path(session[:s_user_id])
-      end 
+    end 
     
   end
 
   def deletethread
     #check unlogin user
-    # checkuser
+     checkuser
     if session[:s_direct_message_id].nil?
       unless session[:s_user_id].nil?
-        
         redirect_to  t_direct_message_path(session[:s_direct_message_id])
       end
     elsif session[:s_user_id].nil?
