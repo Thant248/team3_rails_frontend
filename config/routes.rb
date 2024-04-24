@@ -32,6 +32,13 @@ Rails.application.routes.draw do
   get 'channeluserdestroy' => 'channel_user#destroy'
   get 'channeluserjoin' => 'channel_user#join'
 
+  get 'groupstar' => 't_group_star_msg#create'
+  get 'groupunstar' => 't_group_star_msg#destroy'
+  get 'groupstarthread' => 't_group_star_thread#create'
+  get 'groupunstarthread' => 't_group_star_thread#destroy'
+
+  get 'delete_groupmsg' => "group_message#deletemsg"
+  get 'delete_groupthread' => "group_message#deletethread"
 
 
   get 'refresh_direct' => 'm_users#refresh_direct'
