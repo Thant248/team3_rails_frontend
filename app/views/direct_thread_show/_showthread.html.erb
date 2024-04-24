@@ -11,9 +11,9 @@
 
         <p class="style22"><%= @sender_name%></p>
         
-        <p class="style23"><%= @t_direct_message['created_at'] %>/<%= @t_direct_message['created_at'] %></p>
+        <p class="style23"><%= @t_direct_message['created_at'].to_time.strftime("%F") %>/<%= @t_direct_message['created_at'].to_time.strftime("%I:%M%p") %></p>
                 
-        <p class="style3"> -->  <%= @t_direct_message['directmsg']%></p>
+        <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= @t_direct_message['directmsg']%></p>
 
     </div>
 <hr>
@@ -28,7 +28,7 @@
 
             <p class="style22"><%= t_direct_thread['name']%></p>
 
-            <p class="style23"><%= t_direct_thread['created_at'] %>/<%= t_direct_thread['created_at'] %></p>
+            <p class="style23"><%= t_direct_thread['created_at'].to_time.strftime("%F") %>/<%= t_direct_thread['created_at'].to_time.strftime("%I:%M%p") %></p>
 
             <p class="style24"></p>
             
@@ -39,7 +39,7 @@
             <% end %> 
             
             <%= link_to "",  delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash'%>
-            <p class="style3"> -->  <%= t_direct_thread['directthreadmsg']%></p>
+            <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_direct_thread['directthreadmsg']%></p>
                 
         <% end %>
     </div>

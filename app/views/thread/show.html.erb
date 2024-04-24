@@ -2,7 +2,7 @@
 <div id="main">
 <h1>Thread Lists</h1>
 <div>
-
+    <h2 class="style1">Direct Thread</h1>
     <% @t_direct_messages.each do |t_direct_message| %>
 
     <h2 class="style1"> <%= t_direct_message['name'] %> </h2>
@@ -21,7 +21,7 @@
              <%= link_to "",  "", class:'far fa-star' %></li>
     <% end %> 
 
-    <p class="style3"> -->  <%= t_direct_message['directmsg']%></p>
+    <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_direct_message['directmsg']%></p>
 
         
         <h2 class="style1">Reply</h2>
@@ -45,7 +45,7 @@
                      <%= link_to "",  "", class:'far fa-star' %></li>
             <% end %> 
 
-            <p class="style3"> -->  <%= t_direct_thread['directthreadmsg']%></p>
+            <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_direct_thread['directthreadmsg']%></p>
             <% end %>
         <% end %>
         <hr>
@@ -54,7 +54,7 @@
 
 
 <div>
-
+    <h2 class="style1">Group Thread</h1>
     <% @t_group_messages.each do |t_group_message| %>
 
     
@@ -63,7 +63,7 @@
 
     <p class="style22"><%= t_group_message['name']%></p>
     
-    <p class="style23"><%= t_group_message['created_at'] %>/<%= t_group_message['created_at'] %></p>
+    <p class="style23"><%= t_group_message['created_at'].to_time.strftime("%F") %>/<%= t_group_message['created_at'].to_time.strftime("%I:%M%p") %></p>
             
     <p class="style24"></p>
             
@@ -73,7 +73,7 @@
              <%= link_to "",  "", class:'far fa-star' %></li>
     <% end %> 
 
-    <p class="style3"> -->  <%= t_group_message['groupmsg']%></p>
+    <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_message['groupmsg']%></p>
 
         
         <h2 class="style1">Reply</h2>
@@ -87,7 +87,7 @@
 
             <p class="style22"><%= t_group_thread['name']%></p>
 
-            <p class="style23"><%= t_group_thread['created_at'] %>/<%= t_group_thread['created_at'] %></p>
+            <p class="style23"><%= t_group_thread['created_at'].to_time.strftime("%F") %>/<%= t_group_thread['created_at'].to_time.strftime("%I:%M%p") %></p>
 
             <p class="style24"></p>
             
@@ -97,7 +97,7 @@
                      <%= link_to "",  "", class:'far fa-star' %></li>
             <% end %> 
 
-            <p class="style3"> -->  <%= t_group_thread['groupthreadmsg']%></p>
+            <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_thread['groupthreadmsg']%></p>
             <% end %>
         <% end %>
         <hr>

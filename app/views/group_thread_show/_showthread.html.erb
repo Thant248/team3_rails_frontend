@@ -14,7 +14,7 @@
     
     <p class="style23"><%= @t_group_message['created_at'].to_time.strftime("%F") %>/<%= @t_group_message['created_at'].to_time.strftime("%I:%M%p") %></p>
             
-    <p class="style3"> -->  <%= @t_group_message['groupmsg']%></p>
+    <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= @t_group_message['groupmsg']%></p>
 
 </div>
 
@@ -41,7 +41,7 @@
                 <%= link_to "",  groupstarthread_path(:id => t_group_thread['id']), class:'far fa-star'%></li>
             <% end %> 
             <%= link_to "",  delete_groupthread_path(:id => t_group_thread['id']), class:'glyphicon glyphicon-trash'%>
-            <p class="style3"> -->  <%= t_group_thread['groupthreadmsg']%></p>
+            <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_thread['groupthreadmsg']%></p>
                 
         <% end %>
     </div>
