@@ -50,9 +50,6 @@ class MUsersController < ApplicationController
      session[:confirm_workspace_id] = params[:workspaceid]
      @m_channel = params[:channelid]
      @email = params[:email]
-
-  
-
      response = get_data("confirminvitation?workspaceid=#{@m_workspace}&channelid=#{@m_channel}&email=#{@email}")
      @m_user = MUser.new 
      @m_user.email = response['m_user']['email']
@@ -68,6 +65,34 @@ class MUsersController < ApplicationController
     
     # @m_user.remember_digest = @m_workspace.workspace_name
     # @m_user.profile_image = @m_channel.channel_name
+  end
+
+
+  def update
+    #check unlogin user
+    # checkuser
+
+    password = params[:m_user][:password]
+    password_confirmation = params[:m_user][:password_confirmation]
+
+    if password == "" || password.nil?
+      flash[:danger] = "Password can't be blank."
+      redirect_to change_password_url(id: session[:current_user_id])
+    elsif password_confirmation == "" || password_confirmation.nil?
+      flash[:danger] = "Confirm Password can't be blank."
+      redirect_to change_password_url(id: session[:current_user_id])
+    elsif password != password_confirmation
+      flash[:danger] = "Password and Confirmation Password does not match."
+      redirect_to change_password_url(id: session[:current_user_id])
+    else 
+      data = {
+        "password": password,
+        "password_confirmation": password_confirmation
+      }
+      put_data("/m_users/#{session[:current_user_id]}", {m_users: data})
+      flash[:success] = "Change Password Successful."
+      redirect_to home_url
+    end
   end
 
   def show

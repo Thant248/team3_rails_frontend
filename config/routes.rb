@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   post 'memberinvite' => 'member_invitation#invite'
   get 'confirminvitation' => 'm_users#confirm'
 
+  get 'change_password' => 'change_password#new'
+
   get 'usermanage' => 'user_manage#usermanage'
   get 'edit' => 'user_manage#edit'
   get 'update' => 'user_manage#update'
@@ -65,11 +67,13 @@ Rails.application.routes.draw do
   get 'starthread' => 't_direct_star_thread#create'
   get 'unstarthread' => 't_direct_star_thread#destroy'
 
+  patch 'change_password/:id' => 'm_users#update', as: :change_password
+
   # sessions
   delete 'logout' =>  'sessions#destroy'
 
   resources :m_workspaces, only: [:new, :create]
-  resources :m_users, only: [:new, :create, :show, :refresh_direct]
+  resources :m_users
   resources :t_direct_messages
   resources :m_channels
 

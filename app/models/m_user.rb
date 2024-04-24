@@ -11,5 +11,7 @@
     attr_accessor :active_status
     attr_accessor :admin
     attr_accessor :member_status
+    attr_accessor :created_at
+    attr_accessor :updated_at
 
   end

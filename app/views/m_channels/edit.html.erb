@@ -6,25 +6,25 @@
         <%= f.hidden_field :id %>
         <div class="col-md-1">
         <% if @m_channel['channel_status']==false%>
-        <%= f.radio_button :channel_status,'0',:checked=>true  %> 
+        <%= f.radio_button :channel_status,'false',:checked=>true  %> 
         </div>
         <div class="col-md-3">
         <%= f.label :プライベート %>
         </div>
         <div class="col-md-1">
-        <%= f.radio_button :channel_status,'1'%>
+        <%= f.radio_button :channel_status,'true'%>
         </div>
         <div class="col-md-3">
         <%= f.label :パブリック %>
         </div>
         <%else%>
-        <%= f.radio_button :channel_status,'0' %> 
+        <%= f.radio_button :channel_status,'false' %> 
         </div>
         <div class="col-md-3">
         <%= f.label :プライベート %>
         </div>
         <div class="col-md-1">
-        <%= f.radio_button :channel_status,'1',:checked=>true%>
+        <%= f.radio_button :channel_status,'true',:checked=>true%>
         </div>
         <div class="col-md-3">
         <%= f.label :パブリック %>

@@ -58,21 +58,33 @@ class MChannelsController < ApplicationController
           retrievehome 
       end
 
+      
+      
+
       def update
-        
         channel_status = params[:session][:channel_status]
         channel_name = params[:session][:channel_name]
-            data = {
-              "channel_status": channel_status ,
-              "channel_name": channel_name,
-              "m_workspace_id": session[:workspace_id]
+      
+        if channel_name.blank?
+          # If channel name is not provided, update only channel status
+          data = {
+            "channel_status": channel_status,
+            "m_workspace_id": session[:workspace_id]
           }
-          post_data("/channelupdate?id=#{session[:s_channel_id]}",{m_channel: data})
-          
+        else
+          # If channel name is provided, update both status and name
+          data = {
+            "channel_status": channel_status,
+            "channel_name": channel_name,
+            "m_workspace_id": session[:workspace_id]
+          }
+        end
+      
+        post_data("/channelupdate?id=#{session[:s_channel_id]}", { m_channel: data })
             redirect_to home_url
-          
         
       end
+      
 
       def delete
         

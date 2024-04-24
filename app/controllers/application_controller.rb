@@ -10,9 +10,13 @@ class ApplicationController < ActionController::Base
 
     @m_channels = MChannel.new
 
+    
+
     @current_user = response["current_user"]
+    @m_usering = MUser.new(@current_user)
     @m_user = @current_user["name"]
     @current_user_id = @current_user["id"]
+
     @current_user_admin = @current_user["admin"]
     @workspace_name = response["m_workspace"]["workspace_name"]
     @workspace_id = response["m_workspace"]["id"]
@@ -26,7 +30,8 @@ class ApplicationController < ActionController::Base
 
     session[:current_user_id] = @current_user_id
     session[:m_channels] = response["m_channels"]
-    # session[:m_users] = response["m_users"]
+    session[:m_user_email] = @current_user["email"]
+     # session[:m_users] = response["m_users"]
     # session[:m_p_channels] = response["m_p_channels"]
     # session[:m_channelsids] = response["m_channelsids"]
     session[:m_user] = @current_user["name"]
@@ -71,12 +76,12 @@ class ApplicationController < ActionController::Base
   def retrieve_group_thread
   end
 
-  def check_user
+  def checkuser
     if session[:workspace_id].nil?
       redirect_to home_url
     else
       # m_user = MUser.find_by(id: session[:user_id], member_status: 1)
-      m_user = session[:user_id]
+      m_user = session[:current_user_id]
       if m_user.nil?
         session.delete(:workspace_id)
         session.delete(:s_channel_id)
