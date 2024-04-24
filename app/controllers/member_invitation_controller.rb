@@ -35,6 +35,4 @@ class MemberInvitationController < ApplicationController
       redirect_to home_url
     end
   end
-  
-  
 end

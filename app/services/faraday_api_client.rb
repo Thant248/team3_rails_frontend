@@ -50,13 +50,19 @@ module FaradayApiClient
   end
 
   def put_data(path, data = {})
+  begin
     response = auth_conn.patch(path) do |request|
       request.headers['Content-Type'] = 'application/json'
       request.body = data.to_json
-
     end
+
     handle_response(response)
+  rescue StandardError => e
+    # Handle exceptions or errors here
+    # For simplicity, let's just print the error message for now
+    puts "Error: #{e.message}"
   end
+end
 
   private
 

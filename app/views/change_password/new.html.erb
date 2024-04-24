@@ -5,9 +5,8 @@
     <div class="col-md-6 col-md-offset-4">
       <h1>Change Password</h1>
       <br>
-      <%= form_for(@m_usering, url: change_password_path(id: @m_usering.id)) do |f| %>
+     <%= form_for @m_usering, url: { controller: "m_users", action: "update", id: session[:current_user_id] }, method: :patch do |f| %>
         <%= render 'shared/error_messages', object: f.object %>
-          
         <%= f.label :email %>
         <div>
           <%= @m_usering.email %>

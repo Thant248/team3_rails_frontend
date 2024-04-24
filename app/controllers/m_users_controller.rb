@@ -41,6 +41,35 @@ class MUsersController < ApplicationController
         redirect_to signin_path
       end
   end
+
+  def update
+    #check unlogin user
+    # checkuser
+
+    password = params[:m_user][:password]
+    password_confirmation = params[:m_user][:password_confirmation]
+
+    if password == "" || password.nil?
+      flash[:danger] = "Password can't be blank."
+      redirect_to change_password_url(id: session[:current_user_id])
+    elsif password_confirmation == "" || password_confirmation.nil?
+      flash[:danger] = "Confirm Password can't be blank."
+      redirect_to change_password_url(id: session[:current_user_id])
+    elsif password != password_confirmation
+      flash[:danger] = "Password and Confirmation Password does not match."
+      redirect_to change_password_url(id: session[:current_user_id])
+    else 
+      data = {
+        "password": password,
+        "password_confirmation": password_confirmation
+      }
+      puts password 
+      puts password_confirmation
+      put_data("/m_users/#{session[:current_user_id]}", {m_user: data})
+      flash[:success] = "Change Password Successful."
+      redirect_to home_url
+    end
+  end
   
   def confirm
     #check login user
@@ -68,32 +97,7 @@ class MUsersController < ApplicationController
   end
 
 
-  def update
-    #check unlogin user
-    # checkuser
-
-    password = params[:m_user][:password]
-    password_confirmation = params[:m_user][:password_confirmation]
-
-    if password == "" || password.nil?
-      flash[:danger] = "Password can't be blank."
-      redirect_to change_password_url(id: session[:current_user_id])
-    elsif password_confirmation == "" || password_confirmation.nil?
-      flash[:danger] = "Confirm Password can't be blank."
-      redirect_to change_password_url(id: session[:current_user_id])
-    elsif password != password_confirmation
-      flash[:danger] = "Password and Confirmation Password does not match."
-      redirect_to change_password_url(id: session[:current_user_id])
-    else 
-      data = {
-        "password": password,
-        "password_confirmation": password_confirmation
-      }
-      put_data("/m_users/#{session[:current_user_id]}", {m_users: data})
-      flash[:success] = "Change Password Successful."
-      redirect_to home_url
-    end
-  end
+  
 
   def show
     #check unlogin user

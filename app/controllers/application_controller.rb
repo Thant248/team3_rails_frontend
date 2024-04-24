@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
 
     @current_user = response["current_user"]
     @m_usering = MUser.new(@current_user)
+    @email = @m_usering.email
     @m_user = @current_user["name"]
     @current_user_id = @current_user["id"]
 

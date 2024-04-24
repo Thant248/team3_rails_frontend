@@ -1,5 +1,3 @@
-
-
 class ChangePasswordController < ApplicationController
   def new
     #check unlogin user
