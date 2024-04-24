@@ -89,10 +89,13 @@
                             <li>
                                 <a href="#" class="channel">ダイレクトメッセージ</a>                            
                                     <div id="userlists">
-                                        <ul class="countnumber">
-                                            <li class="countnumberone">
+                                       
+                                            
+                                            <div class="countnumberone">
                                                 <%= link_to @m_user +"(自分)", "#", class: 'glyphicon glyphicon-user', style: 'word-spacing: -0.63em;color:#7AB900'%>
-                                            </li>
+                                            </div>
+                                           
+                                            
                                             <% @count = 0 %>
                                             <% @m_users.each do |m_user| %>
                                                 <% if session[:current_user_id] != m_user['id'] %>
@@ -118,7 +121,7 @@
                                                 <% end %>
                                                 <% @count += 1 %>
                                             <% end %>
-                                        </ul>
+                                       
                                     </div>
                             </li>                       
                         </ul>

@@ -51,6 +51,7 @@ Rails.application.routes.draw do
   get 'channeluser' => 'channel_user#show'
   get 'channeluseradd' => 'channel_user#create'
   get 'channeluserdestroy' => 'channel_user#destroy'
+  get 'channeluserleave' => 'channel_user#leave'
   get 'channeluserjoin' => 'channel_user#join'
 
   post 'directmsg' => 'direct_message#show'

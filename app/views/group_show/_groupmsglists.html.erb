@@ -5,10 +5,11 @@
             <h2 class="style1">
             <%= @s_channel['channel_name']%> 
             <sapn style="margin-left: 20px"> 
-              
+            <i class="material-icons">&#xe7fc;</i> <%= link_to @u_count, channeluser_path%>
             </span>
             
             <% if @m_channelsids.include?session[:s_channel_id].to_i%>
+            <% if session[:current_user_id] == @created_admin[0]['userid'] %>
             <span>
                 <button type="button" class="btn btn-default btn-sm" style='font-size:15px; background-color: #F4F4F4'>
                 <%= link_to "Edit", channeledit_path(id: @s_channel['id'].to_i), class: 'fa fa-edit',  style: 'font-size:15px; color: black;'%> 
@@ -18,6 +19,11 @@
                 <span class="glyphicon glyphicon-trash" style="font-weight:bold">Delete </span>
                 </button>
             </span>
+            <% else %>
+            <button type="button" class="btn btn-default btn-sm" style='font-size:10px; background-color: #F4F4F4; margin-left: 50px'>
+            <%= link_to "Leave Channel", channeluserleave_path(id: session[:current_user_id]), class: "fa fa-sign-out" %>
+            </button>
+            <% end%>
             <% end%>
             </h2>
         </div>
