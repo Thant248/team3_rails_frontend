@@ -2,7 +2,7 @@ class GroupMessageController < ApplicationController
   include FaradayApiClient
   def show
     #check unlogin user
-     checkuser
+     
 
     if session[:s_channel_id].nil?
       redirect_to home_url
@@ -12,9 +12,11 @@ class GroupMessageController < ApplicationController
       data = {
         "message": message,
         "s_channel_id": session[:s_channel_id],
-        "mention_name": mention_name
+        "mention_name": [mention_name]
       };
-      
+      puts '----------------------------------'
+      puts data
+      puts'------------------------------------'
       post_data("/groupmsg", data)
      
       redirect_to m_channel_path(session[:s_channel_id])
@@ -22,7 +24,7 @@ class GroupMessageController < ApplicationController
   end
 
   def showthread
-    checkuser
+    
     if session[:s_group_message_id].nil?
       unless session[:s_channel_id].nil?
         redirect_to m_channel_path(session[:s_channel_id])
@@ -35,7 +37,7 @@ class GroupMessageController < ApplicationController
       data = {
         "message": message,
         "s_group_message_id": session[:s_group_message_id],
-        "mention_name": memtion_name,
+        "mention_name": [memtion_name],
         "s_channel_id": session[:s_channel_id]
       };
       post_data("/groupthreadmsg", data)
@@ -44,7 +46,7 @@ class GroupMessageController < ApplicationController
   end  
 
   def deletemsg
-    checkuser
+    
     if session[:s_channel_id].nil?
       redirect_to home_url
     else  
@@ -54,7 +56,7 @@ class GroupMessageController < ApplicationController
   end 
   
   def deletethread
-    checkuser
+    
     if session[:s_channel_id].nil?
       redirect_to home_url
     else  
