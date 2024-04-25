@@ -14,9 +14,7 @@ class GroupMessageController < ApplicationController
         "s_channel_id": session[:s_channel_id],
         "mention_name": [mention_name]
       };
-      puts '----------------------------------'
-      puts data
-      puts'------------------------------------'
+      
       post_data("/groupmsg", data)
      
       redirect_to m_channel_path(session[:s_channel_id])
@@ -35,10 +33,11 @@ class GroupMessageController < ApplicationController
       message = params[:session][:message]
       memtion_name = params[:session][:memtion_name] 
       data = {
-        "message": message,
         "s_group_message_id": session[:s_group_message_id],
-        "mention_name": [memtion_name],
-        "s_channel_id": session[:s_channel_id]
+        "s_channel_id": session[:s_channel_id],
+        "message": message,
+        "memtion_name": [memtion_name]
+       
       };
       post_data("/groupthreadmsg", data)
       redirect_to t_group_message_path(session[:s_group_message_id])
