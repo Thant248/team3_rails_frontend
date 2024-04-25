@@ -2,7 +2,7 @@ class MentionListsController < ApplicationController
   include FaradayApiClient
   def show
     #check login user
-    checkuser
+   
 
     current_user_id = session[:current_user_id]
     response = get_data("/mentionlists?user_id=#{current_user_id}")

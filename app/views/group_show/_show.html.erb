@@ -6,8 +6,8 @@
       <% if @m_channelsids.include?session[:s_channel_id].to_i%>
           <%= form_for(:session, url: groupmsg_path) do |f| %>
             <div class="col-md-11">
-              <%= f.text_field :message, class: 'form-control', data: { autocomplete_source: @m_channel_users.map { |t| 
-                { :label => '@' + t['name']} } }, id: 'tags' %>
+              <%= f.text_field :message, class: 'form-control', data: { autocomplete_source: @m_channel_users.map { |t| { label: '@' + t['name'], value: t['name'] } } }, id: 'tags', multiple: true %>
+
             </div>
             <div class="col-md-1">
               <%= f.submit "Send", class: "btn btn-primary"%>

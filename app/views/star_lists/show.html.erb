@@ -9,7 +9,7 @@
     <% @direct_star.each_with_index do |direct_star, index| %>
       <p class="style21"><%= index + 1 %></p>
       <p class="style22"><%= direct_star['name'] %></p>
-      <p class="style23"><%= direct_star['created_at'].to_time.strftime("%F") %>/<%= direct_star['created_at'].to_time.strftime("%I:%M%p") %></p>
+      <p class="style23"><%= (direct_star['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
       <p class="style24"></p> 
       <%= link_to "",  "", class:'fas fa-star'%>
       <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= direct_star['directmsg'] %></p>
@@ -23,7 +23,7 @@
     <% @direct_star_thread.each_with_index do |direct_star_thread, index| %>
       <p class="style21"><%= index + 1 %></p>
       <p class="style22"><%= direct_star_thread['name'] %></p>
-      <p class="style23"><%= direct_star_thread['created_at'].to_time.strftime("%F") %>/<%= direct_star_thread['created_at'].to_time.strftime("%I:%M%p") %></p>
+      <p class="style23"><%= (direct_star_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
       <p class="style24"></p> 
       <%= link_to "",  "", class:'fas fa-star'%>
       <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= direct_star_thread['directthreadmsg'] %></p>
@@ -38,7 +38,7 @@
       <h4 class="style2"><%= group_star['channel_name'] %></h4>
       <p class="style21"><%= index + 1 %></p>
       <p class="style22"><%= group_star['name'] %></p>
-      <p class="style23"><%= group_star['created_at'].to_time.strftime("%F") %>/<%= group_star['created_at'].to_time.strftime("%I:%M%p") %></p>
+      <p class="style23"><%= (group_star['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
       <p class="style24"></p> 
       <%= link_to "",  "", class:'fas fa-star'%>
       <p class="style3" style="word-wrap: break-word; width: 550px"> --> <span><%= group_star['groupmsg'] %></span></p>
@@ -53,7 +53,7 @@
       <h4 class="style2"><%= group_star_thread['channel_name'] %></h4>
       <p class="style21"><%= index + 1 %></p>
       <p class="style22"><%= group_star_thread['name'] %></p>
-      <p class="style23"><%= group_star_thread['created_at'].to_time.strftime("%F") %>/<%= group_star_thread['created_at'].to_time.strftime("%I:%M%p") %></p>
+      <p class="style23"><%= (group_star_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
       <p class="style24"></p> 
       <%= link_to "",  "", class:'fas fa-star'%>
       <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= group_star_thread['groupthreadmsg'] %></p>

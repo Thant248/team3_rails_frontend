@@ -2,7 +2,7 @@ class MChannelsController < ApplicationController
   include FaradayApiClient
   def new
       #check unlogin user
-       checkuser
+      
   
       session.delete(:s_user_id)
       session.delete(:s_channel_id)
@@ -14,7 +14,7 @@ class MChannelsController < ApplicationController
   end
 
    def refresh_group
-    checkuser
+   
 
     if session[:r_group_size].nil?
       session[:r_group_size] =  10
@@ -31,7 +31,7 @@ class MChannelsController < ApplicationController
 
     def create
       #check unlogin user
-       checkuser
+       
   
       #call from ApplicationController for retrieve home data
       retrievehome
@@ -52,7 +52,7 @@ class MChannelsController < ApplicationController
     end
 
     def show
-      checkuser
+      
 
       session.delete(:s_user_id)
       session.delete(:s_direct_message_id)
@@ -75,7 +75,7 @@ class MChannelsController < ApplicationController
     end
 
     def update
-      checkuser
+     
 
       channel_status = params[:session][:channel_status]
       channel_name = params[:session][:channel_name]
@@ -92,7 +92,7 @@ class MChannelsController < ApplicationController
     end
 
     def delete
-      checkuser
+      
 
       channel_id =  session[:s_channel_id]
        delete_data("/m_channels/#{channel_id}")
