@@ -64,6 +64,7 @@ class ApplicationController < ActionController::Base
 
     @s_channel = response['retrieve_group_message']['s_channel']
     @m_channel_users = response['retrieve_group_message']['m_channel_users']
+    @length = @m_channel_users.length
     @t_group_messages = response['retrieve_group_message']['t_group_messages']
     @t_group_star_msgids = response['retrieve_group_message']['t_group_star_msgids']
     @u_count = response['retrieve_group_message']['u_count']

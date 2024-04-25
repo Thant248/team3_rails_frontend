@@ -1,6 +1,6 @@
 class AllUnreadController < ApplicationController
     def show
-        checkuser
+    
 
         response = get_data("/allunread?user_id=#{@user_id}")
         if response.nil?

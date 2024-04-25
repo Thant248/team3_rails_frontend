@@ -34,7 +34,7 @@
         <br><br>
 
         <%= f.label :ChannelName%>
-        <%= f.text_field:channel_name, class:'form-control'%> 
+        <%= f.text_field:channel_name, class:'form-control', placeholder: "#@m_channel['channel_name']" %> 
         <%= f.submit "Update", class: "btn btn-primary" %>
         <% end %>
     </div>
