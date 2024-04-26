@@ -16,9 +16,14 @@
                                     <li class="countnumberone">
                                         <%= link_to "全未読", allunread_url, class: 'fa fa-align-justify' %>
                                     </li>
+                                    <% if @all_unread_count == 0 %>
+
+                                    <% else%>
+
                                     <li class="countnumbertwo">
                                         <%= @all_unread_count %>
                                     </li>
+                                    <%end%>
                                 </div>
                             </ul>
                             <li class="form-inline my-0 my-lg-0">
