@@ -69,8 +69,10 @@ class ApplicationController < ActionController::Base
     @t_group_star_msgids = response['retrieve_group_message']['t_group_star_msgids']
     @u_count = response['retrieve_group_message']['u_count']
     @created_admin = response['retrieve_group_message']['created_admin']
-    @t_group_message_dates = response['retrieve_group_message']['t_group_message_dates'] || []
+    @t_group_message_dates = response['retrieve_group_message']['t_group_message_dates'].sort_by{|e| e['created_date']} || []
     @t_group_message_datesize = response['retrieve_group_message']['t_group_message_datesize'] || []
+    puts '--------------------------'
+    puts @t_group_message_dates 
   end
 
   def retrieve_group_thread
