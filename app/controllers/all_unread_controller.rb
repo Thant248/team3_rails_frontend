@@ -1,8 +1,8 @@
 class AllUnreadController < ApplicationController
     def show
-    
-
-        response = get_data("/allunread?user_id=#{@user_id}")
+        retrievehome
+        @current_user_id = @current_user["id"]
+        response = get_data("/allunread?user_id=#{@current_user_id}")
         if response.nil?
             flash.now[:danger] = 'Null Value'
         else 
@@ -10,8 +10,10 @@ class AllUnreadController < ApplicationController
             @t_direct_threads = response['t_direct_threads'] || []
             @t_user_channelids = response['t_user_channelids'] || []
             @t_group_messages = response['t_group_messages'] || []  
-
-            retrievehome
+            puts '============================='
+            puts @t_direct_messages
+            puts '============================='
+            
         end
     end
 end

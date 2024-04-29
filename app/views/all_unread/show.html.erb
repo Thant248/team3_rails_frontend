@@ -11,11 +11,11 @@
 
     <p class="style21"><%= @count += 1 %></p>
 
-    <p class="style22"><%= t_direct_message.name%></p>
+    <p class="style22"><%= t_direct_message['name']%></p>
     
-    <p class="style23"><%= t_direct_message.created_at.strftime("%F") %>/<%= t_direct_message.created_at.strftime("%I:%M%p") %></p>
+    <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
             
-    <p class="style3"> -->  <%= t_direct_message.directmsg%></p>
+    <p class="style3"> -->  <%= t_direct_message['directmsg']%></p>
     <hr>
     <% end %>
 
@@ -29,11 +29,11 @@
 
             <p class="style21"><%= @count += 1 %></p>
 
-            <p class="style22"><%= t_direct_thread.name%></p>
+            <p class="style22"><%= t_direct_thread['name']%></p>
 
-            <p class="style23"><%= t_direct_thread.created_at.strftime("%F") %>/<%= t_direct_thread.created_at.strftime(" %I:%M%p") %></p>
+            <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
-            <p class="style3"> -->  <%= t_direct_thread.directthreadmsg%></p>
+            <p class="style3"> -->  <%= t_direct_thread['directthreadmsg']%></p>
         <hr>
     <% end %>
 
@@ -48,17 +48,17 @@
             
     <% @t_user_channelids.each do |id| %>
     
-    <% if id.to_i == t_group_message.id %>
+    <% if id.to_i == t_group_message['id'] %>
 
-    <h4 class="style2"><%= t_group_message.channel_name%></h4>
+    <h4 class="style2"><%= t_group_message['channel_name']%></h4>
 
     <p class="style21"><%= @count += 1 %></p>
 
-    <p class="style22"><%= t_group_message.name%></p>
+    <p class="style22"><%= t_group_message['name']%></p>
 
-    <p class="style23"><%= t_group_message.created_at.strftime("%F") %>/<%= t_group_message.created_at.strftime(" %I:%M%p") %></p>
+    <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
 
-    <p class="style3"> -->  <%= t_group_message.groupmsg%></p>
+    <p class="style3"> -->  <%= t_group_message['groupmsg']%></p>
     
 
     <p class="style24"></p> 
