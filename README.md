@@ -18,4 +18,4 @@
 https://zenn.dev/redheadchloe/articles/631a8fa58ed7b9 <br>
 https://qiita.com/pokohide/items/7397b92a188da841b435 <br>
 https://qiita.com/k5trismegistus/items/de1d4f1cb2a8a88e81c2 <br>
-https://qiita.com/at-946/items/8630ddd411d1e6a651c6"# team3_rails_frontend" 
+https://qiita.com/at-946/items/8630ddd411d1e6a651c6 "# team3_rails_frontend" 
