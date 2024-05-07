@@ -1,4 +1,4 @@
-ARG RUBY_VERSION=3.1.2
+ARG RUBY_VERSION=3.3.0
 # FROM ruby:${RUBY_VERSION}-slim-bullseye
 FROM ruby:${RUBY_VERSION}
 RUN apt-get update -qq && apt-get install -y nodejs postgresql-client vim
