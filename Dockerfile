@@ -8,7 +8,7 @@ WORKDIR ${ROOT}
 
 COPY Gemfile ${ROOT}/Gemfile
 COPY Gemfile.lock ${ROOT}/Gemfile.lock
-RUN bundle install
+# RUN bundle install
 
 COPY . ${ROOT}
 
