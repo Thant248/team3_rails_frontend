@@ -98,7 +98,7 @@ class MUsersController < ApplicationController
 
   def show
     #check unlogin user
-     checkuser
+  
 
     session.delete(:s_channel_id)
     session.delete(:s_group_message_id)

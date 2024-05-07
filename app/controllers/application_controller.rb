@@ -22,6 +22,8 @@ class ApplicationController < ActionController::Base
     # Add more instance variables if needed
     @m_users = response["m_users"]
     @m_channels = response["m_channels"]
+    puts "----------------------------------"
+    puts @m_channels
     @m_p_channels = response["m_p_channels"]
     @direct_msgcounts = response["direct_msgcounts"]
     @all_unread_count = response["all_unread_count"]
@@ -44,7 +46,7 @@ class ApplicationController < ActionController::Base
     @t_direct_messages = response['t_direct_messages']
     @temp_direct_star_msgids = response['temp_direct_star_msgids']
     @t_direct_star_msgids = response['t_direct_star_msgids']
-    @t_direct_message_dates =  response['t_direct_message_dates']
+    @t_direct_message_dates =  response['t_direct_message_dates'].sort_by{|e| e['created_date']} || []
     @t_direct_message_datesize = response['t_direct_message_datesize']
 
   end
@@ -64,12 +66,15 @@ class ApplicationController < ActionController::Base
 
     @s_channel = response['retrieve_group_message']['s_channel']
     @m_channel_users = response['retrieve_group_message']['m_channel_users']
+    @length = @m_channel_users.length
     @t_group_messages = response['retrieve_group_message']['t_group_messages']
     @t_group_star_msgids = response['retrieve_group_message']['t_group_star_msgids']
     @u_count = response['retrieve_group_message']['u_count']
     @created_admin = response['retrieve_group_message']['created_admin']
-    @t_group_message_dates = response['retrieve_group_message']['t_group_message_dates'] || []
+    @t_group_message_dates = response['retrieve_group_message']['t_group_message_dates'].sort_by{|e| e['created_date']} || []
     @t_group_message_datesize = response['retrieve_group_message']['t_group_message_datesize'] || []
+    puts '--------------------------'
+    puts @t_group_message_dates 
   end
 
   def retrieve_group_thread

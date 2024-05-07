@@ -14,7 +14,6 @@ class GroupMessageController < ApplicationController
         "s_channel_id": session[:s_channel_id],
         "mention_name": [mention_name]
       };
-      
       post_data("/groupmsg", data)
      
       redirect_to m_channel_path(session[:s_channel_id])
