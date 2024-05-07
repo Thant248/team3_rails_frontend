@@ -1,0 +1,14 @@
+# Exported from Render on 2024-05-07T08:47:09Z
+services:
+- type: web
+  name: team3_rails_frontend
+  runtime: static
+  repo: https://github.com/Thant248/team3_rails_frontend
+  envVars:
+  - key: RAILS_MASTER_KEY
+    sync: false
+  - key: WEB_CONCURRENCY
+    sync: false
+  buildCommand: bundle install
+  staticPublishPath: app
+version: "1"
