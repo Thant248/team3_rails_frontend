@@ -1,14 +1,23 @@
-# Exported from Render on 2024-05-07T08:47:09Z
+databases:
+  - name: mysite
+    databaseName: mysite
+    user: mysite
+    plan: free
+
 services:
-- type: web
-  name: team3_rails_frontend
-  runtime: static
-  repo: https://github.com/Thant248/team3_rails_frontend
-  envVars:
-  - key: RAILS_MASTER_KEY
-    sync: false
-  - key: WEB_CONCURRENCY
-    sync: false
-  buildCommand: bundle install
-  staticPublishPath: app
-version: "1"
+  - type: web
+    name: mysite
+    runtime: ruby
+    plan: free
+    buildCommand: "./bin/render-build.sh"
+    # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
+    startCommand: "bundle exec rails server"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postgres://cmmteam3_backend_db_user:FG2TSsC6DmMYc7S7IKR6GaSUzP8vUBTH@dpg-co5ag3779t8c739sl1jg-a/cmmteam3_backend_db
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: WEB_CONCURRENCY
+        value: 2 # sensible default
