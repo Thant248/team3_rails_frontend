@@ -35,7 +35,7 @@
     def destroy
       #①APIのログアウトをCALLする
       make_logut('/logout')
-      logout
+      log_out
     end
 
 

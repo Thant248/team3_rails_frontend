@@ -38,6 +38,7 @@ module SessionsHelper
     session.delete(:user_id)
     session.delete(:workspace_id)
     session.delete(:token)
+    redirect_to root_url
   end
 
   def auth_token

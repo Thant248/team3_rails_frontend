@@ -67,7 +67,7 @@ Rails.application.routes.draw do
   get 'refresh_direct' => 'm_users#refresh_direct'
   get 'refresh_group' => 'm_channels#refresh_group'
 
-  get 'logout' =>  'sessions#destroy'
+  delete 'logout' =>  'sessions#destroy'
 
   resources :m_workspaces
   resources :m_users
