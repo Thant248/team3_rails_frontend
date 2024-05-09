@@ -1,4 +1,4 @@
-class ChangePasswordController < ApplicationController\
+class ChangePasswordController < ApplicationController
   include FaradayApiClient
   
   def new
