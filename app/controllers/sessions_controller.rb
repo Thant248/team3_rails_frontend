@@ -36,7 +36,7 @@
       #①APIのログアウトをCALLする
       make_logut('/logout')
       log_out if logged_in? 
-      redirect_to root_url
+      redirect_to signin_path
     end
 
 
