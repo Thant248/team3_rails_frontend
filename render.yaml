@@ -1,9 +1,3 @@
-databases:
-  - name: mysite
-    databaseName: mysite
-    user: mysite
-    plan: free
-
 services:
   - type: web
     name: mysite
@@ -13,10 +7,10 @@ services:
     # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
     startCommand: "bundle exec rails server"
     envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: postgres://cmmteam3_backend_db_user:FG2TSsC6DmMYc7S7IKR6GaSUzP8vUBTH@dpg-co5ag3779t8c739sl1jg-a/cmmteam3_backend_db
-          property: connectionString
+      # - key: DATABASE_URL
+      #   fromDatabase:
+      #     name: postgres://cmmteam3_backend_db_user:FG2TSsC6DmMYc7S7IKR6GaSUzP8vUBTH@dpg-co5ag3779t8c739sl1jg-a/cmmteam3_backend_db
+      #     property: connectionString
       - key: RAILS_MASTER_KEY
         sync: false
       - key: WEB_CONCURRENCY
