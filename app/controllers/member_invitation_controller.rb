@@ -31,11 +31,11 @@ class MemberInvitationController < ApplicationController
   
     result = post_data("/memberinvite", {m_invite: data})
     if result.nil?
-      flash.now[:danger] = 'Member invite failed'
+      flash[:danger] = 'Member invite failed'
       redirect_to memberinvite_url
     else
-      flash.now[:success] = 'Member has been successfully invited'
-      redirect_to home_url
+      flash[:success] = 'Member has been successfully invited'
+      redirect_to memberinvite_url
     end
   end
 end
