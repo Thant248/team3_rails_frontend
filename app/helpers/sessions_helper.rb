@@ -16,9 +16,9 @@ module SessionsHelper
 
   def current_user
     user_id = session[:user_id]
-    #  @current_user ||= MUser.find_by(id: user_id)
+      @current_user ||= MUser.find_by(id: user_id)
     # data = RedisClient.redis.get(user_id)
-    # @current_user ||= Marshal.load(data)
+     @current_user ||= Marshal.load(data)
   end
 
   def logged_in?

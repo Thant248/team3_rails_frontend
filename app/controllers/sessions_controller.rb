@@ -35,8 +35,7 @@
     def destroy
       #①APIのログアウトをCALLする
       make_logut('/logout')
-      log_out if logged_in? 
-      redirect_to root_url
+      logout
     end
 
 
