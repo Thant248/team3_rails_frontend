@@ -1,76 +1,135 @@
 <% provide(:title, 'All Unread') %>
 <div id="main">
+  <h1 style="margin-left: 200px;">All Unread Lists</h1>
 
-<h1>All Unread Lists</h1>
+  <div class="tab-container">
+    <div class="tab2" style="max-width: 922px;">
+      <button class="tablinks star-tab" onclick="openTab(event, 'direct_unread')">Direct Unread Messages</button>
+      <button class="tablinks star-tab" onclick="openTab(event, 'direct_threads')">Direct Unread Threads</button>
+      <button class="tablinks star-tab" onclick="openTab(event, 'group_unread')">Group Unread Messages</button>
+      <button class="tablinks star-tab" onclick="openTab(event, 'group_threads')">Group Unread Thread Messages</button>
+    </div>
+  </div>
 
-<div>
-    <h2 class="style1">Direct Unread Messages</h2>
-
-    <% @count = 0 %>
-    <% @t_direct_messages.each do |t_direct_message| %>
-
-    <p class="style21"><%= @count += 1 %></p>
-
-    <p class="style22"><%= t_direct_message['name']%></p>
-    
-    <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-            
-    <p class="style3"> -->  <%= t_direct_message['directmsg']%></p>
-    <hr>
-    <% end %>
-
-</div>
-
-<div>
-        <h2 class="style1">Direct Unread Threads</h2>
-
-        <% @count = 0 %>
-        <% @t_direct_threads.each do |t_direct_thread| %>
-
-            <p class="style21"><%= @count += 1 %></p>
-
-            <p class="style22"><%= t_direct_thread['name']%></p>
-
-            <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-
-            <p class="style3"> -->  <%= t_direct_thread['directthreadmsg']%></p>
+  <div id="direct_unread" class="tabcontent">
+    <% if @t_direct_messages.any? %>
+      <% @t_direct_messages.each do |t_direct_message| %>
+        <% if t_direct_message['profile_image'].present? %>
+          <img src="<%= t_direct_message['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= t_direct_message['name'][0].upcase %>
+          </div>
+        <% end %> 
+        <p class="style22"><%= t_direct_message['name'] %></p>
+        <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+        <div class="style3"><%= render_html(t_direct_message['directmsg']) %></div>
         <hr>
+      <% end %>
+    <% else %>
+      <div class="no-data-container">
+        <p class="style2">No direct unread message yet!</p>
+      </div>
     <% end %>
+  </div>
 
+  <div id="direct_threads" class="tabcontent" style="display: none;">
+    <% if @t_direct_threads.any? %>
+      <% @t_direct_threads.each do |t_direct_thread| %>
+        <% if t_direct_thread['profile_image'].present? %>
+          <img src="<%= t_direct_thread['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= t_direct_thread['name'][0].upcase %>
+          </div>
+        <% end %> 
+        <p class="style22"><%= t_direct_thread['name'] %></p>
+        <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+        <div class="style3"><%= render_html(t_direct_thread['directthreadmsg']) %></div>
+        <hr>
+      <% end %>
+    <% else %>
+      <div class="no-data-container">
+        <p class="style2">No direct thread unread message yet!</p>
+      </div>
+    <% end %>
+  </div>
+
+  <div id="group_unread" class="tabcontent" style="display: none;">
+    <% if @t_group_messages.any? { |msg| @t_user_channelids.include?(msg['id'].to_i) } %>
+      <% @t_group_messages.each do |t_group_message| %>
+        <% @t_user_channelids.each do |id| %>
+          <% if id.to_i == t_group_message['id'] %>
+            <h2 class="style1"><%= t_group_message['channel_name'] %></h2>
+            <% if t_group_message['profile_image'].present? %>
+              <img src="<%= t_group_message['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+            <% else %>
+              <div class="profile-placeholder" style="margin-left: 250px">
+                <%= t_group_message['name'][0].upcase %>
+              </div>
+            <% end %> 
+            <p class="style22"><%= t_group_message['name'] %></p>
+            <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+            <div class="style3"><%= render_html(t_group_message['groupmsg']) %></div>
+            <hr>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <div class="no-data-container">
+        <p class="style2">No group unread message yet!</p>
+      </div>
+    <% end %>
+  </div>
+
+  <div id="group_threads" class="tabcontent" style="display: none;">
+    <% if @t_group_threads.any? { |thread| @t_user_channelthreadids.include?(thread['id'].to_i) } %>
+      <% @t_group_threads.each do |t_group_thread| %>
+        <% @t_user_channelthreadids.each do |id| %>
+          <% if id.to_i == t_group_thread['id'] %>
+            <h2 class="style1"><%= t_group_thread['channel_name'] %></h2>
+            <% if t_group_thread['profile_image'].present? %>
+              <img src="<%= t_group_thread['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+            <% else %>
+              <div class="profile-placeholder" style="margin-left: 250px">
+                <%= t_group_thread['name'][0].upcase %>
+              </div>
+            <% end %> 
+            <p class="style22"><%= t_group_thread['name'] %></p>
+            <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+            <div class="style3"><%= render_html(t_group_thread['groupthreadmsg']) %></div>
+            <hr>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <div class="no-data-container">
+        <p class="style2">No group thread unread message yet!</p>
+      </div>
+    <% end %>
+  </div>
 </div>
 
 <div>
-    <h2 class="style1">Group Unread Messages</h2>
-
-    <% @count = 0 %>
-
-    <% @t_group_messages.each do |t_group_message| %>
-            
-    <% @t_user_channelids.each do |id| %>
-    
-    <% if id.to_i == t_group_message['id'] %>
-
-    <h4 class="style2"><%= t_group_message['channel_name']%></h4>
-
-    <p class="style21"><%= @count += 1 %></p>
-
-    <p class="style22"><%= t_group_message['name']%></p>
-
-    <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-
-    <p class="style3"> -->  <%= t_group_message['groupmsg']%></p>
-    
-
-    <p class="style24"></p> 
-            
-    <% end %>
-    <% end %>
-    <% end %>
+  <%= render 'leftpanel/leftpanel' %>
 </div>
 
-</div>
-    
+<script>
+  function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
 
-<div>
-    <%= render 'leftpanel/leftpanel' %>
-</div>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.tablinks').click();
+  });
+</script>

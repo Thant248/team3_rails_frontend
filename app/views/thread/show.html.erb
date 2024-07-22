@@ -1,111 +1,587 @@
 <% provide(:title, 'Thread') %>
 <div id="main">
-<h1>Thread Lists</h1>
-<div>
-    <h2 class="style1">Direct Thread</h1>
-    <% @t_direct_messages.each do |t_direct_message| %>
+  <h1 style="margin-left: 200px;">Threads Lists</h1>
 
-    <h2 class="style1"> <%= t_direct_message['name'] %> </h2>
+  <div class="tab-container">
+    <div class="tab2">
+      <button class="tablinks" onclick="openTab(event, 'direct')">Direct Threads</button>
+      <button class="tablinks" onclick="openTab(event, 'group')">Group Threads</button>
+    </div>
+  </div>
 
-    <p class="style21">1</p>
+  <div id="direct" class="tabcontent">
+    <% if @t_direct_messages.any? %>
+      <% @t_direct_messages.each do |t_direct_message| %>
+        <div class="thread-container">
+          
+          <% mainUser = "" %>
+          <% if t_direct_message['sender_id'] != @current_user_id  %>
+            <% mainUser = t_direct_message['name'] %>
+          <% else %>
+            <% mainUser = t_direct_message['receiver_name'] %>
+          <% end %>
 
-    <p class="style22"><%= t_direct_message['name']%></p>
+          <h2 style="padding: 0px; margin-left: 14px;"><%= mainUser %></h2>
 
-    <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-           
-    <p class="style24"></p> 
-            
-    <% if @t_direct_star_msgids.include? t_direct_message['id']%>
-             <%= link_to "", "", class:'fas fa-star' %></li>
-    <% else %>
-             <%= link_to "",  "", class:'far fa-star' %></li>
-    <% end %> 
-
-    <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_direct_message['directmsg']%></p>
-
-        
-        <h2 class="style1">Reply</h2>
-
-        <% @count = 0 %>
-        <% @t_direct_threads.each do |t_direct_thread| %>
-
-            <% if t_direct_message['id']== t_direct_thread['t_direct_message_id'] %>
-
-            <p class="style21"><%= @count += 1 %></p>
-
-            <p class="style22"><%= t_direct_thread['name']%></p>
-
-            <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-
-            <p class="style24"></p> 
-            
-            <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
-                     <%= link_to "", "", class:'fas fa-star' %></li>
-            <% else %>
-                     <%= link_to "",  "", class:'far fa-star' %></li>
-            <% end %> 
-
-            <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_direct_thread['directthreadmsg']%></p>
+          <% otherUser = "" %>
+          <% if t_direct_message['sender_id'] != @current_user_id %>
+            <% otherUser = t_direct_message['name'] %>
+          <% end %>
+          <% @t_direct_threads.each do |t_direct_thread| %>
+            <% if t_direct_message['id'] == t_direct_thread['t_direct_message_id'] %>
+              <% if @current_user_id != t_direct_thread['sender_id'] %>
+                <% otherUser = t_direct_thread['name'] %>
+              <% end %>
             <% end %>
-        <% end %>
-        <hr>
-    <% end %>
-</div>
+          <% end %>
 
+          <% if otherUser == "" %>
+            <h5 class="groupthreadnames">自分のみ</h5>
+          <% else %>
+            <h5 class="groupthreadnames"> <%= otherUser %>さんとあなた </h5>
+          <% end %>
 
-<div>
-    <h2 class="style1">Group Thread</h1>
-    <% @t_group_messages.each do |t_group_message| %>
+          <% if t_direct_message['profile_image'].present? %>
+            <img src="<%= t_direct_message['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 20px">
+          <% else %>
+            <div class="profile-placeholder" style="margin-left: 20px">
+              <%= t_direct_message['name'][0].upcase %>
+            </div>
+          <% end %> 
+          <p class="style22" style="font-weight: bold;"><%= t_direct_message['name'] %></p>
+          <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+          <p class="style24"></p> 
+          <% if @t_direct_star_msgids.include?(t_direct_message['id']) %>
+            <%= link_to "", "", class: 'fas fa-star' %>
+          <% else %>
+            <%= link_to "", "", class: 'far fa-star' %>
+          <% end %> 
+          <div style="word-wrap: break-word; width: 550px; margin-left: 80px;">
+            <%= render_html(t_direct_message['directmsg']) %>
+          </div>
 
-    
-
-    <p class="style21">1</p>
-
-    <p class="style22"><%= t_group_message['name']%></p>
-    
-    <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-            
-    <p class="style24"></p>
-            
-    <% if @t_group_star_msgids.include? t_group_message['id'] %>
-             <%= link_to "", "", class:'fas fa-star' %></li>
+          <div style="margin-left: 50px">
+            <h2 style="padding-top: 0px;">Reply</h2>
+            <% @count = 0 %>
+            <% @t_direct_threads.each do |t_direct_thread| %>
+              <% if t_direct_message['id'] == t_direct_thread['t_direct_message_id'] %>
+                <% if t_direct_thread['profile_image'].present? %>
+                  <img src="<%= t_direct_thread['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 20px">
+                <% else %>
+                  <div class="profile-placeholder" style="margin-left: 20px">
+                    <%= t_direct_thread['name'][0].upcase %>
+                  </div>
+                <% end %> 
+                <p class="style22" style="font-weight: bold;"><%= t_direct_thread['name'] %></p>
+                <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+                <p class="style24"></p> 
+                <% if @t_direct_star_thread_msgids.include?(t_direct_thread['id']) %>
+                  <%= link_to "", "", class: 'fas fa-star' %>
+                <% else %>
+                  <%= link_to "", "", class: 'far fa-star' %>
+                <% end %> 
+                <div class="style3" style="word-wrap: break-word; width: 550px; margin-left: 80px;">
+                  <%= render_html(t_direct_thread['directthreadmsg']) %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+          <div class="textboxbg2">
+            <div class="textboxeditor2" oninput="adjustTextboxHeight(this, event)">
+              
+              <div class="toolbar" id="toolbar-<%= t_direct_message['id'] %>">
+                <button class="ql-bold disable"></button>
+                <button class="ql-italic disable"></button>
+                <button class="ql-strike disable"></button>
+                <button class="ql-link disable"></button>
+                <button class="ql-list" value="ordered"></button>
+                <button class="ql-list" value="bullet"></button>
+                <button class="ql-blockquote"></button>
+                <button id="code-block-<%= t_direct_message['id'] %>" class="btn-icon"><i class="fas fa-code"></i></button>
+                <button id="highlight-text-<%= t_direct_message['id'] %>" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
+              </div>
+              
+              <div class="link-dialog" id="link-dialog-<%= t_direct_message['id'] %>" style="display: none;">
+                <h3 id="link-title">Add your link</h3>
+                <input type="text" id="link-name-<%= t_direct_message['id'] %>" placeholder="Enter link name">
+                <input type="text" id="link-url-<%= t_direct_message['id'] %>" placeholder="Enter URL">
+                <button id="link-cancel-<%= t_direct_message['id'] %>">Cancel</button>
+                <button id="link-save-<%= t_direct_message['id'] %>">Yes</button>
+              </div>
+              
+              <%= form_for(:session, url: directthreadmsgdirectly_path) do |f| %>
+                <div class="col-md-11">
+                  <div class="editor" id="editor-<%= t_direct_message['id'] %>" data-message-id="<%= t_direct_message['id'] %>"></div>
+                  <%= f.hidden_field :message, id: "quill-content-#{t_direct_message['id']}" %>
+                  <%= f.hidden_field :t_direct_message_id, value: t_direct_message['id'] %>
+                  <%= f.hidden_field :t_directmsg_sender_id, value: t_direct_message['sender_id'] %>
+                </div>
+                <div class="col-md-1 mt-10">
+                  <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "sendbtn-#{t_direct_message['id']}" %>
+                </div>
+              <% end %>
+              
+              <div class="col-md-11">
+                <span><i class="fas fa-plus"></i></span>
+                <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar-<%= t_direct_message['id'] %>"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
     <% else %>
-             <%= link_to "",  "", class:'far fa-star' %></li>
-    <% end %> 
+      <div class="no-data-container">
+        <p class="style2">No direct thread yet!</p>
+      </div>
+    <% end %>
+  </div>
 
-    <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_message['groupmsg']%></p>
+  <div id="group" class="tabcontent">
+    <% if @t_group_messages.any? %>
+      <% @t_group_messages.each do |t_group_message| %>
+      <div class="thread-container">
+        <h2 style="padding: 0px; margin-left: 14px;"><%= t_group_message['channel_name'] %></h2>
 
-        
-        <h2 class="style1">Reply</h2>
+        <% sendUserNames = [] %>
+        <% loginUserName = "" %>
 
-        <% @count = 0 %>
+        <% if t_group_message['m_user_id'] != @current_user_id %>
+          <% sendUserNames.unshift(t_group_message['name']) %>
+        <% else %>
+          <% loginUserName = "とあなた" %>
+        <% end %>
+
         <% @t_group_threads.each do |t_group_thread| %>
-
-            <% if t_group_message['id'] == t_group_thread['t_group_message_id'] %>
-
-            <p class="style21"><%= @count += 1 %></p>
-
-            <p class="style22"><%= t_group_thread['name']%></p>
-
-            <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-
-            <p class="style24"></p>
-            
-            <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
-                     <%= link_to "", "", class:'fas fa-star' %></li>
+          <% if t_group_message['id'] == t_group_thread['t_group_message_id'] %>
+            <% if @current_user_id != t_group_thread['m_user_id'] %>
+              <% sendUserNames.unshift(t_group_thread['name']) %>
             <% else %>
-                     <%= link_to "",  "", class:'far fa-star' %></li>
-            <% end %> 
-
-            <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_thread['groupthreadmsg']%></p>
-            <% end %>
+              <% loginUserName = "とあなた" %>
+            <%end%>
+          <% end %>
         <% end %>
-        <hr>
-    <% end %>
-</div>
+        <% sendUserNames = sendUserNames | [] %>
+        <% if sendUserNames.length == 0 %>
+          <h5 class="groupthreadnames">自分のみ</h5>
+        <% else %>
+          <h5 class="groupthreadnames">
+          <%= (sendUserNames.join("さん、") + "さん、" + loginUserName) %>
+          </h5>
+        <% end %>
+
+        <% if t_group_message['profile_image'].present? %>
+          <img src="<%= t_group_message['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 20px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 20px">
+            <%= t_group_message['name'][0].upcase %>
+          </div>
+        <% end %> 
+        <p class="style22" style="font-weight: bold;"><%= t_group_message['name'] %></p>
+        <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+        <p class="style24"></p> 
+        <% if @t_group_star_msgids.include?(t_group_message['id']) %>
+          <%= link_to "", "", class: 'fas fa-star' %>
+        <% else %>
+          <%= link_to "", "", class: 'far fa-star' %>
+        <% end %> 
+        <div class="style3" style="word-wrap: break-word; width: 550px; margin-left: 80px;">
+          <%= render_html(t_group_message['groupmsg']) %>
+        </div>
+        <div style="margin-left: 50px">
+          <h2 style="padding-top: 0px;">Reply</h2>
+          <% @count = 0 %>
+          <% @t_group_threads.each do |t_group_thread| %>
+            <% if t_group_message['id'] == t_group_thread['t_group_message_id'] %>
+              <% if t_group_thread['profile_image'].present? %>
+                <img src="<%= t_group_thread['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 20px">
+              <% else %>
+                <div class="profile-placeholder" style="margin-left: 20px">
+                  <%= t_group_thread['name'][0].upcase %>
+                </div>
+              <% end %> 
+              <p class="style22" style="font-weight: bold;"><%= t_group_thread['name'] %></p>
+              <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+              <p class="style24"></p> 
+              <% if @t_group_star_thread_msgids.include?(t_group_thread['id']) %>
+                <%= link_to "", "", class: 'fas fa-star' %>
+              <% else %>
+                <%= link_to "", "", class: 'far fa-star' %>
+              <% end %> 
+              <div class="style3" style="word-wrap: break-word; width: 550px; margin-left: 80px;">
+                <%= render_html(t_group_thread['groupthreadmsg']) %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="textboxbg2">
+          <div class="textboxeditor2" oninput="adjustTextboxHeight(this, event)">
             
+            <div class="toolbar" id="toolbar-<%= t_group_message['id'] %>">
+              <button class="ql-bold disable"></button>
+              <button class="ql-italic disable"></button>
+              <button class="ql-strike disable"></button>
+              <button class="ql-link disable"></button>
+              <button class="ql-list" value="ordered"></button>
+              <button class="ql-list" value="bullet"></button>
+              <button class="ql-blockquote"></button>
+              <button id="code-block-<%= t_group_message['id'] %>" class="btn-icon"><i class="fas fa-code"></i></button>
+              <button id="highlight-text-<%= t_group_message['id'] %>" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
+            </div>
+            
+            <div class="link-dialog" id="link-dialog-<%= t_group_message['id'] %>" style="display: none;">
+              <h3 id="link-title">Add your link</h3>
+              <input type="text" id="link-name-<%= t_group_message['id'] %>" placeholder="Enter link name">
+              <input type="text" id="link-url-<%= t_group_message['id'] %>" placeholder="Enter URL">
+              <button id="link-cancel-<%= t_group_message['id'] %>">Cancel</button>
+              <button id="link-save-<%= t_group_message['id'] %>">Yes</button>
+            </div>
+            
+            <%= form_for(:session, url: groupthreadmsgdirectly_path) do |f| %>
+              <div class="col-md-11">
+                <div class="editor" id="editor-<%= t_group_message['id'] %>" data-message-id="<%= t_group_message['id'] %>"
+                data-autocomplete-source="<%= t_group_message['channel_users'].map { |t| { label: '@' + t } }.to_json %>"></div>
+                <%= f.hidden_field :message, id: "quill-content-#{t_group_message['id']}" %>
+                <%= f.hidden_field :t_group_message_id, value: t_group_message['id'] %>
+                <%= f.hidden_field :t_channel_id, value: t_group_message['channel_id'] %>
+                <%= f.hidden_field :mention_name, class: 'mention_name' %>
+              </div>
+              <div class="col-md-1 mt-10">
+                <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "sendbtn-#{t_group_message['id']}" %>
+              </div>
+            <% end %>
+            
+            <div class="col-md-11">
+              <span><i class="fas fa-plus"></i></span>
+              <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar-<%= t_group_message['id'] %>"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% end %>
+    <% else %>
+      <div class="no-data-container">
+        <p class="style2">No group thread yet!</p>
+      </div>
+    <% end %>
+  </div>
+</div>
 
 <div>
-    <%= render 'leftpanel/leftpanel' %>
+  <%= render 'leftpanel/leftpanel' %>
 </div>
-  
+
+<script>
+  // tab button function
+  function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.tablinks').click();
+  });
+
+  // adjust text box height
+  function adjustTextboxHeight(div, event) {
+    var newHeight = 70;
+    var editorContainer = div.querySelector('.ql-editor');
+    var lineHeight = parseInt(window.getComputedStyle(editorContainer).lineHeight);
+    newHeight += editorContainer.scrollHeight + lineHeight;
+
+    var html = editorContainer.innerHTML;
+    var lineBreaks = (html.match(/<br>/g) || []).length;
+    newHeight += lineBreaks * lineHeight;
+
+    div.style.height = `${newHeight}px`;
+  }
+
+  // quill editor start
+
+  // highlight
+  var Inline = Quill.import('blots/inline');
+  class HighlightBlot extends Inline {
+    static create(value) {
+      let node = super.create();
+      node.setAttribute('class', 'highlight');
+      return node;
+    }
+
+    static formats(node) {
+      return node.getAttribute('class');
+    }
+  }
+  HighlightBlot.blotName = 'highlight';
+  HighlightBlot.tagName = 'span';
+  Quill.register(HighlightBlot);
+
+  //code block
+  var Block = Quill.import('blots/inline');
+  class CodeBlot extends Block {
+    static create(value) {
+      let node = super.create();
+      node.setAttribute('class', 'codeblock');
+      return node;
+    }
+
+    static formats(node) {
+      return node.getAttribute('class');
+    }
+  }
+  CodeBlot.blotName = 'codeblock';
+  CodeBlot.tagName = 'span';
+  Quill.register(CodeBlot);
+
+  document.addEventListener("DOMContentLoaded", function() {
+    var toolbarOptions = [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'strike'],        
+      ['link'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['blockquote'],
+    ];
+    var quillContainers = document.querySelectorAll('[data-message-id]');
+    quillContainers.forEach(function(container) {
+    var messageId = container.dataset.messageId;
+    var quill = new Quill(`#editor-${messageId}`, {
+      modules: {
+          toolbar: {
+            container: `#toolbar-${messageId}`,
+            handlers: {
+              link: function() {
+                var range = this.quill.getSelection();
+                if (range) {
+                  showLinkDialog(range, messageId);
+                }
+              }
+            }
+          }
+        },
+        placeholder: 'Type your message here ...',
+        theme: 'snow'
+    });
+
+    quill.setText('');
+    quill.update();
+    
+
+    // highlight start
+    var isHighlighting = false;
+
+    function updateButtonText() {
+      var highlightText = document.querySelector(`#highlight-text-${messageId}`);
+
+      if(isHighlighting){
+        highlightText.classList.add('active');
+      } else {
+        highlightText.classList.remove('active');
+      }
+    }
+
+    function toggleHighlight() {
+      var format = quill.getFormat();
+      if (format.highlight) {
+        quill.format('highlight', false);
+        isHighlighting = false;
+      } else {
+        quill.format('highlight', true);
+        isHighlighting = true;
+      }
+      updateButtonText();
+      quill.focus();
+    }
+
+    var hiddenInput = document.querySelector(`#quill-content-${messageId}`);
+
+    quill.on('text-change', function() {
+      if (hiddenInput) {
+        hiddenInput.value = quill.root.innerHTML;
+        var format = quill.getFormat();
+        isHighlighting = !!format.highlight;
+        updateButtonText();
+      } else {
+        console.log('Hidden input not found');
+      } 
+    });
+
+    var highlightTextBtn = document.getElementById(`highlight-text-${messageId}`);
+    highlightTextBtn.addEventListener('click', function() {
+      if (!isCodeblocking) {
+        toggleHighlight();
+      } else {
+        quill.focus();
+      }
+      var htmlContent = quill.root.innerHTML;
+      document.querySelector(`#quill-content-${messageId}`).value = htmlContent;
+    });
+    // highlight end 
+
+    // codeblock start 
+    var isCodeblocking = false;
+    function updateCodeBtn() {
+      if(isCodeblocking){
+        var codeBlock = document.querySelector(`#code-block-${messageId}`);
+        codeBlock.classList.add('active');
+        var btns = document.querySelectorAll(".disable");
+        btns.forEach(btn => btn.disabled = true);
+      } else {
+        var codeBlock = document.querySelector(`#code-block-${messageId}`);
+        codeBlock.classList.remove('active');
+        var btns = document.querySelectorAll(".disable");
+        btns.forEach(btn => btn.disabled = false);
+      }
+    }
+
+    function toggleCodeblock() {
+      isCodeblocking = !isCodeblocking;
+      quill.format('codeblock', isCodeblocking);
+      updateCodeBtn();
+      quill.focus();
+    }
+
+    quill.on('text-change', function() {
+      hiddenInput.value = quill.root.innerHTML;
+      var format = quill.getFormat();
+      isCodeblocking = !!format.codeblock;
+      updateCodeBtn();
+    });
+
+    var codeBlockBtn = document.getElementById(`code-block-${messageId}`);
+    codeBlockBtn.addEventListener('click', function() {
+      if(!isHighlighting){
+        toggleCodeblock();
+      }else{
+        quill.focus();
+      }
+      var htmlContent = quill.root.innerHTML;
+      document.querySelector(`#quill-content-${messageId}`).value = htmlContent;
+    });
+    updateCodeBtn();
+    // codeblock end 
+
+    // codeblock and highlight btn status 
+    quill.container.firstChild.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        isCodeblocking = false;
+        updateCodeBtn();
+        isHighlighting = false;
+        updateButtonText();
+      }
+    });
+
+    // for link dialog 
+    var range = quill.getSelection();
+    quill.on('selection-change', function(range, oldRange, source) {
+      if (range && range.length > 0) {
+        var selectedText = quill.getText(range.index, range.length);
+        if(selectedText){
+          $(`#toolbar-${messageId}`).removeClass("hidden");
+        }
+        $(`#link-name-${messageId}`).val(selectedText);
+      }
+    });
+
+    function showLinkDialog(range) {
+      var linkDialog = document.getElementById(`link-dialog-${messageId}`);
+      linkDialog.style.display = 'block';
+      document.querySelector(`#link-name-${messageId}`).focus();
+      document.querySelector(`#link-save-${messageId}`).onclick = function() {
+        var linkText = document.querySelector(`#link-name-${messageId}`).value;
+        var linkUrl = document.querySelector(`#link-url-${messageId}`).value;
+        if (linkText && linkUrl) {
+          quill.insertText(range.index, linkText,'link', linkUrl);
+          if (range.length > 0) {
+            quill.deleteText(range.index + linkText.length, range.length);
+          }
+          quill.setSelection(range.index + linkText.length, 0);
+          hideLinkDialog(messageId);
+        }
+      };
+      document.getElementById(`link-cancel-${messageId}`).onclick = function() {
+        hideLinkDialog(messageId);
+      };
+    }
+
+    function hideLinkDialog(messageId) {
+      var linkDialog = document.getElementById(`link-dialog-${messageId}`);
+      linkDialog.style.display = 'none';
+      document.querySelector(`#link-name-${messageId}`).value = '';
+      document.querySelector(`#link-url-${messageId}`).value = '';
+    }
+
+    // Prevent Quill from losing focus when clicking inside the dialog
+    document.querySelector(`#link-dialog-${messageId}`).addEventListener('mousedown', function(event) {
+      event.stopPropagation();
+    });
+
+    // for toggle toolbar 
+    var toolbar = quill.getModule('toolbar');
+    var toolbarui = document.getElementById(`toolbar-${messageId}`);
+    var toggleButton = document.getElementById(`toggle-toolbar-${messageId}`);
+    toggleButton.addEventListener('click', function() {
+      toolbarui.classList.toggle('hidden');
+    });
+
+    var form = document.querySelector('form');
+    form.onsubmit = function() {
+      var htmlContent = quill.getSemanticHTML();
+      var quillContent = document.querySelector(`#quill-content-${messageId}`);
+      htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
+      quillContent.value = htmlContent;
+    }
+
+    // for mention select 
+    $( `#editor-${messageId}` ).autocomplete({
+      source: $(`#editor-${messageId}`).data('autocomplete-source'),
+      position: {
+        my: "left bottom",
+        at: "left top",
+      },
+      select: function(event, ui) {
+        event.preventDefault();
+
+        var range = quill.getSelection();
+
+        range.value = ui.item.value
+        $('.mention_name').val(range.value)
+
+        // Check the text before the cursor
+        var textBefore = quill.getText(range.index - 1, 1);
+        if (textBefore === '@') {
+          // Delete the @ before inserting the new text
+          quill.deleteText(range.index - 1, 1);
+          range.index -= 1;
+        }
+
+        quill.insertText(range.index, ui.item.label, "user");
+        quill.setSelection(range.index + ui.item.label.length);
+      }
+    });
+
+    $('#stop').click(function() {
+      clearInterval(yourInterval);
+    });
+
+    // validate btn
+    var sendbtn = document.querySelector(`#sendbtn-${messageId}`);
+    sendbtn.disabled = true;
+    quill.on('text-change', function(delta, oldDelta, source) {
+      hiddenInput.value = quill.root.innerHTML;
+      var editorContent = quill.getText().trim();
+      if (editorContent.length > 0) {
+        sendbtn.disabled = false;
+      } else {
+        sendbtn.disabled = true;
+      }
+    });
+  });        
+});
+</script>

@@ -1,34 +1,52 @@
 <% provide(:title, 'Create Workspace') %>
-
+<div id="password_error" class="text-danger style22" style="margin-left:400px; font-size:14px; margin-top: 10px;"></div>
 <h1>Member Confirmation</h1>
 
 <div class="container para">
   <div class="col-md-6 col-md-offset-3">
-    <%= form_for(@m_user, url: m_users_path) do |f| %>
+    <%= form_for @m_user, url: m_users_path, html: { onclick: "return validateForm()" } do |f| %>
       <%= render 'shared/error_messages', object: f.object %>
 
-        <%= f.label :workspace_name, "Workspace Name" %>
-        <%= f.text_field :remember_digest, class: 'form-control', :readonly => true %>
+      <%= f.label :workspace_name, "Workspace Name" %>
+      <%= f.text_field :remember_digest, class: 'form-control', :readonly => true %>
 
-        <%= f.label :channel_name, "Channel Name" %>
-        <%= f.text_field :profile_image, class: 'form-control', :readonly => true %>
+      <%= f.label :channel_name, "Channel Name" %>
+      <%= f.text_field :profile_image, class: 'form-control', :readonly => true %>
 
-        <%= f.label :name %>
-        <%= f.text_field :name, class: 'form-control' %>
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control' %>
 
-        <%= f.label :email %>
-        <%= f.text_field :email, class: 'form-control', :readonly => true %>
+      <%= f.label :email %>
+      <%= f.text_field :email, class: 'form-control', :readonly => true %>
 
-        <%= f.label :password %>
-        <%= f.password_field :password, class: 'form-control' %>
+      <%= f.label :password %>
+      <%= f.password_field :password, class: 'form-control validatepwd' %>
 
-        <%= f.label :password_confirmation %>
-        <%= f.password_field :password_confirmation, class: 'form-control' %>
+      <%= f.label :password_confirmation %>
+      <%= f.password_field :password_confirmation, class: 'form-control validate_confirmpwd' %>
 
-        <%= f.hidden_field :admin, value: '0', class: 'form-control' %>
-        
-        <%= f.submit "Create my account", class: "btn btn-primary" %>
+      <%= f.hidden_field :admin, value: '0', class: 'form-control' %>
+      
+      <%= f.submit "Create my account", class: "btn btn-primary" %>
+      <div class="warning-message" style="color: #0077B6; margin-top: 10px;">
+        <strong style="margin-bottom: 5px;">Password must contain at least 8 characters, 1 upper and lower case characters, 1 digit and 1 special character.</strong>
+      </div>
     <% end %>
   </div>
 </div>
 
+<script>
+  function validateForm() {
+    const password = document.querySelector('.validatepwd').value;
+    const password_confirmation = document.querySelector('.validate_confirmpwd').value;
+    const password_error = document.getElementById('password_error');
+    password_error.textContent = '';
+    if (password != "" && password_confirmation != "") {
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@\'#'$&*]).{8,}/.test(password) ) {
+        password_error.textContent = "Password must be at least 8 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character.";
+        return false;
+      }
+    }
+    return true;
+  }
+</script>

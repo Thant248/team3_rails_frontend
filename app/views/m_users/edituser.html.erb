@@ -1,0 +1,110 @@
+<div id="main">
+  <% provide(:title, "Edit Profile") %>
+  <div class="container para">
+    <div class="col-md-6 col-md-offset-4">
+      <h1>Edit Profile</h1>
+      <br>
+      <%= form_for @m_usering, url: { controller: "m_users", action: "updateuser", id: session[:current_user_id] }, method: :patch do |f| %>
+        <%= render 'shared/error_messages', object: f.object %>
+
+        <div class="flash-messages">
+          <% if flash[:success].present? %>
+            <div class="alert alert-success">
+              <%= flash[:success] %>
+            </div>
+          <% end %>
+
+          <% if flash[:danger].present? %>
+            <div class="alert alert-danger">
+              <%= flash[:danger] %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="avatar-container">
+          <% if @m_usering.profile_image_url.present? %>
+            <div class="avatar-wrapper">
+              <%= image_tag @m_usering.profile_image_url, class: 'avatar' %>
+              <div class="edit-icon" onclick="document.getElementById('profile_image_input').click();">
+                <i class="fas fa-pencil-alt"></i>
+              </div>
+            </div>
+          <% else %>
+            <div class="avatar-placeholder" onclick="document.getElementById('profile_image_input').click();">
+              <i class="fas fa-plus"></i>
+            </div>
+          <% end %>
+        </div>
+        <%= f.file_field :profile_image, id: 'profile_image_input', style: 'display: none;' %>
+        <br>
+
+        <%= f.label :email %>
+        <div>
+          <%= @m_usering.email %>
+        </div>
+        <br>
+        <%= f.label :workspacename %>
+        <div>
+          <%= @workspace_name %>
+        </div>
+        <br>
+        <%= f.label :name %>
+        <%= f.text_field :username, class: 'form-control' , value: @m_user %>
+        <%= f.submit "Update", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div>
+  <%= render 'leftpanel/leftpanel' %>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const fileInput = document.getElementById('profile_image_input');
+    const avatarPlaceholder = document.querySelector('.avatar-placeholder');
+
+    fileInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          const base64Data = reader.result.split(',')[1];
+          const mimeType = file.type;
+          const requestBody = {
+            user_id: <%= session[:current_user_id] %>,
+            image: {
+              data: base64Data,
+              mime: mimeType
+            }
+          };
+
+          $.ajax({
+            url : '<%= profile_upload_path %>',
+            type : 'post',
+            data : JSON.stringify(requestBody),
+            contentType: 'application/json',
+            headers: {
+              'X-CSRF-Token': '<%= form_authenticity_token %>'
+            },
+            success : function(response) {
+              location.reload();
+            },
+            error : function(xhr, status, error) {
+              console.error('Error:', error);
+            }
+            }).done(function(response) {
+              var flashMessage = response.message;
+              if (response.success) {
+                $('.flash-messages').html('<div class="alert alert-success">' + flashMessage + '</div>');
+              } else {
+                $('.flash-messages').html('<div class="alert alert-danger">' + flashMessage + '</div>');
+              }
+            });
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+</script>
+

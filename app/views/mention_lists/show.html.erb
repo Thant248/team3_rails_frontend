@@ -1,67 +1,95 @@
 <% provide(:title, 'Mention') %>
 <div id="main">
+  <h1 style="margin-left: 200px;">Mention Lists</h1>
 
-<h1>Mention Lists</h1>
+  <div class="tab-container">
+    <div class="tab2">
+      <button class="tablinks" onclick="openTab(event, 'GroupMentions')">Group Mention Lists</button>
+      <button class="tablinks" onclick="openTab(event, 'GroupThreads')">Group Thread Mention Lists</button>
+    </div>
+  </div>
 
-<div>
-    <h2 class="style1">Group Mention Lists</h2>
-
+  <div id="GroupMentions" class="tabcontent">
     <% @count = 0 %>
-    <% @t_group_messages.each do |t_group_message| %>
-
-    <h4 class="style2"><%= t_group_message['channel_name'] %></h4>
-
-    <p class="style21"><%= @count += 1 %></p>
-
-    <p class="style22"><%= t_group_message['name']%></p>
-    
-    <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-
-    <p class="style24"></p> 
-            
-    <% if @t_group_star_msgids.include? t_group_message['id'] %>
-        <%= link_to "",  "", class:'fas fa-star'%>
+    <% if @t_group_messages.any? %>
+      <% @t_group_messages.each do |t_group_message| %>
+        <h2 class="style2"><%= t_group_message['channel_name'] %></h2>
+        <% if t_group_message['profile_image'].present? %>
+          <img src="<%= t_group_message['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= t_group_message['name'][0].upcase %>
+          </div>
+        <% end %>
+        <p class="style22"><%= t_group_message['name'] %></p>
+        <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+        <p class="style24"></p>
+        <% if @t_group_star_msgids.include? t_group_message['id'] %>
+          <%= link_to "", "", class:'fas fa-star' %>
+        <% else %>
+          <%= link_to "", "", class:'far fa-star' %>
+        <% end %>
+        <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(t_group_message['groupmsg']) %></div>
+        <hr>
+      <% end %>
     <% else %>
-        <%= link_to "",  "", class:'far fa-star'%>
+      <div class="no-data-container">
+        <p class="style2">No group mention yet!</p>
+      </div>
     <% end %>
-            
-    <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_message['groupmsg']%></p>
-    <hr>
-    <% end %>
+  </div>
 
-</div>
-
-<div>
-    <h2 class="style1">Group Thread Mention Lists</h2>
-
+  <div id="GroupThreads" class="tabcontent">
     <% @count = 0 %>
-    <% @t_group_threads.each do |t_group_thread| %>
-
-    <h4 class="style2"><%= t_group_thread['channel_name']%></h4>
-
-    <p class="style21"><%= @count += 1 %></p>
-
-    <p class="style22"><%= t_group_thread['name']%></p>
-    
-    <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-
-    <p class="style24"></p> 
-            
-    <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
-        <%= link_to "",  "", class:'fas fa-star'%>
+    <% if @t_group_threads.any? %>
+      <% @t_group_threads.each do |t_group_thread| %>
+        <h2 class="style2"><%= t_group_thread['channel_name'] %></h2>
+        <% if t_group_thread['profile_image'].present? %>
+          <img src="<%= t_group_thread['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= t_group_thread['name'][0].upcase %>
+          </div>
+        <% end %>
+        <p class="style22"><%= t_group_thread['name'] %></p>
+        <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+        <p class="style24"></p>
+        <% if @t_group_star_thread_msgids.include? t_group_thread['id'] %>
+          <%= link_to "", "", class:'fas fa-star' %>
+        <% else %>
+          <%= link_to "", "", class:'far fa-star' %>
+        <% end %>
+        <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(t_group_thread['groupthreadmsg']) %></div>
+        <hr>
+      <% end %>
     <% else %>
-        <%= link_to "",  "", class:'far fa-star'%>
+      <div class="no-data-container">
+        <p class="style2">No group thread mention yet!</p>
+      </div>
     <% end %>
-            
-    <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_thread['groupthreadmsg']%></p>
-    <hr>
-    <% end %>
-
+  </div>
 </div>
-
-</div>
-    
 
 <div>
-    <%= render 'leftpanel/leftpanel' %>
+  <%= render 'leftpanel/leftpanel' %>
 </div>
+
+<script>
+  function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.tablinks').click();
+  });
+</script>

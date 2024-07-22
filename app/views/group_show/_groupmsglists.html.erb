@@ -1,92 +1,185 @@
-<div class="txtmsg">	
-<% @count = 0 %>
-    <div id="grouplist">	
-        <div class="title">		
-            <h2 class="style1">
-            <%= @s_channel['channel_name']%> 
-            <sapn style="margin-left: 20px"> 
-            <i class="material-icons">&#xe7fc;</i> <%= link_to @length, channeluser_path%>
-            </span>
-            
-            <% if @m_channelsids.include?session[:s_channel_id].to_i%>
-            <% if session[:current_user_id] == @created_admin[0]['userid'] %>
+<div class="txtmsg">
+  <% @count = 0 %>
+  <div id="grouplist">
+    <div class="title">
+      <h2 class="style1">
+        <%= @s_channel["channel_name"] %>
+        <span style="margin-left: 20px">
+          <i class="material-icons">&#xe7fc;</i> <%= link_to @length, channeluser_path %>
+        </span>
+        
+        <% if @m_channelsids.include? session[:s_channel_id].to_i %>
+          <% if session[:current_user_id] == @created_admin[0]["userid"] %>
             <span>
-                <button type="button" class="btn btn-default btn-sm" style='font-size:15px; background-color: #F4F4F4'>
-                <%= link_to "Edit", channeledit_path(id: @s_channel['id'].to_i), class: 'fa fa-edit',  style: 'font-size:15px; color: black;'%> 
-                </button>
-                
-                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" style='font-size:15px; background-color: #F4F4F4'>
+              <button type="button" class="btn btn-default btn-sm" style='font-size:15px; background-color: #F4F4F4'>
+                <%= link_to "Edit", channeledit_path(id: @s_channel["id"].to_i), class: "fa fa-edit", style: "font-size:15px; color: black;" %>
+              </button>
+              
+              <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" style='font-size:15px; background-color: #F4F4F4'>
                 <span class="glyphicon glyphicon-trash" style="font-weight:bold">Delete </span>
-                </button>
+              </button>
             </span>
-            <% else %>
+          <% else %>
             <button type="button" class="btn btn-default btn-sm" style='font-size:10px; background-color: #F4F4F4; margin-left: 50px'>
-            <%= link_to "Leave Channel", channeluserleave_path(id: session[:current_user_id]), class: "fa fa-sign-out" %>
+              <%= link_to "Leave Channel", channeluserleave_path(id: session[:current_user_id]), class: "fa fa-sign-out" %>
             </button>
-            <% end%>
-            <% end%>
-            </h2>
-        </div>
-        <div class="style1" style="padding-top: 80px">
-                <%= link_to "Load Mode",  refresh_group_url , class:'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;'%>
-        </div>
-        <% @t_group_message_dates.each do |t_group_message_date| %>
-            <% if @t_group_message_datesize.include?t_group_message_date['created_date'] %>
-                <h2 class="style1"><%= t_group_message_date['created_date'] %></h2>
-                <% @t_group_messages.each do |t_group_message| %>
-                    <% if t_group_message_date['created_date'].to_s == t_group_message['created_at'].to_time.strftime("%F").to_s %>
-                        <p class="style21"><%= @count += 1 %></p>
-
-                        <p class="style22"><%= t_group_message['name']%></p>
-
-                        <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-
-                        <p class="style24"><%= link_to t_group_message['count'],  t_group_message_path(id: t_group_message['id']), class: 'fab fa-facebook-messenger'%></p>
-
-                        <% if @t_group_star_msgids.include? t_group_message['id'] %>
-                        <%= link_to "",  groupunstar_path(:id => t_group_message['id']), class:'fas fa-star' %>
-                        <% else %>
-                        <%= link_to "",  groupstar_path(:id => t_group_message['id']), class:'far fa-star'%>
-                        <% end %>
-                        <%= link_to "",  delete_groupmsg_path(:id => t_group_message['id']), class:'glyphicon glyphicon-trash'%>
-
-                        <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_group_message['groupmsg']%></p>
-                        <hr>
-                    <% end %>
-                <% end %>
-            <% end %>
+          <% end %>
         <% end %>
-   </div>
-</div>
+      </h2>
+    </div>
 
- <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #1C2331">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title" style="color: white">Channel Delete</h4>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure to delete channel?</p>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-info btn-sm" style='font-size:15px;'>
-                <%= link_to "Delete", delete_channel_path(id: @s_channel['id'].to_i), class: 'glyphicon glyphicon-trash',  style: 'font-size:15px; color: white;'%>
-            </button>
-        </div>
+    <div class="load-mode-container">
+      <div class="style6">
+        <%= link_to "Load More", refresh_group_url , class:'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;'%>
       </div>
-      
+    </div>
+    
+    <div class="message-content">
+      <% @t_group_message_dates.each do |t_group_message_date| %>
+      <% if @t_group_message_datesize.include?t_group_message_date['created_date'] %>
+        <h2 class="style1"><%= t_group_message_date['created_date'] %></h2>
+        <% @t_group_messages.each do |t_group_message| %>
+          <% if t_group_message_date['created_date'].to_s == t_group_message['created_at'].to_time.strftime("%F").to_s && !t_group_message['draft_message_status'] %>
+            <% if t_group_message['image_url'].present? %>
+              <img src="<%= t_group_message['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+            <% else %>
+              <div class="profile-placeholder" style="margin-left: 250px">
+                <%= t_group_message['name'][0].upcase %>
+              </div>
+            <% end %>
+
+            <p class="style22"><strong><%= t_group_message["name"] %></strong></p>
+
+            <p class="style23"><%= (t_group_message["created_at"].to_time + 9.hours).strftime("%F/%I:%M%p") %></p>
+
+            <p class="style24"><%= link_to t_group_message["count"], t_group_message_path(id: t_group_message["id"]), class: "fab fa-facebook-messenger style22" %></p>
+
+             <%= link_to "", "", class: "far fa-laugh-beam style22 emoji-button", data: { message_id: t_group_message["id"] }, style: "text-decoration:none;" %>
+
+            <% if @t_group_star_msgids.include? t_group_message["id"] %>
+              <%= link_to "", groupunstar_path(:id => t_group_message["id"]), class: "fas fa-star style22" %>
+            <% else %>
+              <%= link_to "", groupstar_path(:id => t_group_message["id"]), class: "far fa-star style22" %>
+            <% end %>
+
+            <% if session[:current_user_id] == t_group_message["send_user_id"] %>
+              <%= link_to "", edit_groupmsg_path(id: t_group_message["id"]), class: "far fa-edit style22", id: "editbtn" %>
+            <% end %>
+
+            <% if session[:current_user_id] == t_group_message["send_user_id"] %>
+              <%= link_to "", delete_groupmsg_path(:id => t_group_message["id"]), class: "glyphicon glyphicon-trash style22" %>
+            <% end %>
+            <div class="style3" style="word-wrap: break-word; width: 550px"> <%= render_html(t_group_message["groupmsg"]) %></div>
+            
+            <div class="reactionBox">
+              <% if @t_group_react_msgids.include? t_group_message["id"] %> <!-- Check if there is data in the table -->
+                <% userNames = [] %>
+                <% userIds = [] %>
+                <% @emoji_counts.each do |emoji_count| %>
+                  <% if emoji_count["groupmsgid"] == t_group_message["id"] %>
+                    <% @react_usernames.each do |react_userName| %>
+                      <% if emoji_count["groupmsgid"] == react_userName["groupmsgid"] && emoji_count["emoji"] == react_userName["emoji"] %>
+                        <% if react_userName["name"] == @current_user["name"] %>
+                            <% userNames << "#{react_userName["name"]}(自分)" %>
+                        <% else %>
+                            <% userNames << react_userName["name"] %>
+                        <% end %>
+                        <% userIds << react_userName["userid"] %>
+                      <% end %>   
+                    <% end %>
+                    <% if userIds.include? @current_user["id"] %>
+                        <button type="button" class="btnEmoji" id="emoji-buttons-<%= t_group_message["id"] %>" data-message-id="<%= t_group_message["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
+                            <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", groupreact_path(message_id: t_group_message["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
+                        </button>
+                    <% else %>  
+                        <button type="button" class="btnEmoji1" id="emoji-buttons-<%= t_group_message["id"] %>" data-message-id="<%= t_group_message["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
+                            <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", groupreact_path(message_id: t_group_message["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
+                        </button>
+                    <% end %>
+                  <% end %>
+                <% userNames = [] %>
+                <% userIds = [] %>
+                <% end %>
+              <% end %>
+            </div>
+            <hr>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
     </div>
   </div>
+</div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+  
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #1C2331">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" style="color: white">Channel Delete</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure to delete channel?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info btn-sm" style='font-size:15px;'>
+          <%= link_to "Delete", delete_channel_path(id: @s_channel["id"].to_i), class: "glyphicon glyphicon-trash", style: "font-size:15px; color: white;" %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- emoji button -->
 <script>
-    window.scrollTo(0,document.body.scrollHeight);
+  window.scrollTo(0, document.body.scrollHeight);
+  document.addEventListener('DOMContentLoaded', () => {
+    const picker = new EmojiButton();
+    document.querySelectorAll('.emoji-button').forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        picker.togglePicker(button);
+        picker.on('emoji', emoji => {
+          var messageId = button.dataset.messageId;
+          return fetch('/groupreact', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+              emoji: emoji,
+              message_id: messageId
+            })
+          })
+          .then(response => {
+            console.log('Success:', response.status);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            else {
+              window.location.reload();
+            }
+          })
+          .then(data => {
+            console.log('Success:', data);
+            // Handle success, update UI accordingly
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            // Handle error, update UI accordingly
+          });
+        });
+      });
+    });
+    // Initialize all tooltips
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip(
+        {container:'body', trigger: 'hover', placement:"top"}
+      );
+    });
+  });
 </script>
-
-
-
-
-

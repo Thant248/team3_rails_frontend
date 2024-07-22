@@ -5,16 +5,14 @@
 #Version 1.0.0
 
 class TGroupMessagesController < ApplicationController
-    def show
-    
-      session[:s_group_message_id] =  params[:id]
+  def show
+    session[:s_group_message_id] =  params[:id]
 
-      #call from ApplicationController for retrieve group thread data
-      retrieve_group_thread
+    #call from ApplicationController for retrieve group thread data
+    retrieve_group_thread
 
-      #call from ApplicationController for retrieve home data
-      retrievehome
-    
-    end
+    #call from ApplicationController for retrieve home data
+    retrievehome
+  end
 end
   

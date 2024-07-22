@@ -1,52 +1,49 @@
 <div id="main">
   <%= render "group_show/groupmsglists" %>
   <div class = "textboxbg">
-    <% if @m_channelsids.include? session[:s_channel_id].to_i %>
-      <div class="textboxeditor">
+    <div class="textboxeditor">
 
-        <div id="toolbar">
-          <button class="ql-bold disable"></button>
-          <button class="ql-italic disable"></button>
-          <button class="ql-strike disable"></button>
-          <button class="ql-link disable"></button>
-          <button class="ql-list" value="ordered"></button>
-          <button class="ql-list" value="bullet"></button>
-          <button class="ql-blockquote"></button>
-          <button class="ql-code-block"></button>
-          <button id="highlight-text" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
-        </div>
-
-        <div id="link-dialog" style="display: none;">
-          <h3 id= "link-title">Add your link</h3>
-          <input type="text" id="link-name" placeholder="Enter link name">
-          <input type="text" id="link-url" placeholder="Enter URL">
-          <button id="link-cancel">Cancel</button>
-          <button id="link-save">Yes</button>
-        </div>
-
-        <%= form_for(:session, url: groupmsg_path) do |f| %>
-          <div class="col-md-11" draftData="<%= @t_group_messages.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
-            <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: "@" + t["name"] } }.to_json %>"></div>
-            <%= f.hidden_field :message, id: "quill-content" %>
-          </div>
-          <div class="col-md-1 mt-10">
-            <%= f.hidden_field :draft_status, value: false %>
-            <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
-          </div>
-          <%= f.hidden_field :memtion_name, class: "memtion_name" %>
-        <% end %>
-        <div class="col-md-11">
-          <span><i class="fas fa-plus"></i></span>
-          <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
-        </div>
+      <div id="toolbar">
+        <button class="ql-bold disable"></button>
+        <button class="ql-italic disable"></button>
+        <button class="ql-strike disable"></button>
+        <button class="ql-link disable"></button>
+        <button class="ql-list" value="ordered"></button>
+        <button class="ql-list" value="bullet"></button>
+        <button class="ql-blockquote"></button>
+        <button class="ql-code-block"></button>
+        <button id="highlight-text" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
       </div>
-    <% else %>
-      <div style="padding-bottom: 20px" >
-        <%= link_to "Join into channel", channeluserjoin_path(userid: session[:user_id]), class: "btn btn-primary" %>
+
+      <div id="link-dialog" style="display: none;">
+        <h3 id= "link-title">Add your link</h3>
+        <input type="text" id="link-name" placeholder="Enter link name">
+        <input type="text" id="link-url" placeholder="Enter URL">
+        <button id="link-cancel">Cancel</button>
+        <button id="link-save">Yes</button>
       </div>
-    <% end %>
+
+      <%= form_for(:session, url: update_groupmsg_path) do |f| %>
+        <div class="col-md-10">
+          <div id="editor" class="form-control" data-autocomplete-source="<%= @m_channel_users.map { |t| { label: "@" + t["name"] } }.to_json %>"></div>
+          <%= f.hidden_field :message, id: "quill-content" %>
+          <%= hidden_field_tag :id, params[:id] %>
+          <%= hidden_field_tag :action_type, "", id: "gpmsgaction" %>
+        </div>
+        <div class="col-md-1 mt-10 arrange">
+          <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "editgpmsg" %>
+          <button class="btn btn-secondary editcancle">Cancle</button>
+        </div>
+        <%= f.hidden_field :memtion_name, class: "memtion_name" %>
+      <% end %>
+
+      <div class="col-md-11">
+        <span><i class="fas fa-plus"></i></span>
+        <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
+      </div>
+
+    </div>
   </div>
-
 <div>
   <%= render "leftpanel/leftpanel" %>
 </div>
@@ -65,12 +62,13 @@
     }
 
     static formats(node) {
-      return node.getAttribute('class');
+      return node.classList.contains('highlight') ? 'highlight' : undefined;
     }
   }
 
   HighlightBlot.blotName = 'highlight';
   HighlightBlot.tagName = 'span';
+  HighlightBlot.className = 'highlight';
   Quill.register(HighlightBlot);
 
   // call quill
@@ -101,92 +99,6 @@
       theme: 'snow'
     });
 
-    var senderId = $('#form').data('sender-id');
-    var t_group_messages = JSON.parse($('#form').attr('draftData'));
-    var draft_message_arr = t_group_messages.find((t_group_message)=>{ 
-      return (t_group_message.send_user_id == senderId && t_group_message.draft_message_status);
-    });
-    var isClickSendButton = false;
-    var isSaveDraft = true;
-    if (draft_message_arr != undefined ) {
-      var draftedMessage = draft_message_arr.groupmsg;
-      var draftSenderId = draft_message_arr.send_user_id;
-      var draftedMessageId = draft_message_arr.id;
-      isSaveDraft = false;
-    }
-    quill.setContents([{
-      insert: draftedMessage,
-    }]);
-    document.querySelector('#send_btn').addEventListener('click', function() {
-      isClickSendButton = true;
-    });
-
-    $(window).bind('beforeunload', () => {
-      var messageContent = quill.getText().trim();
-      if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
-        var draftStatus = true;
-        var formData = {
-          session: {
-            message: messageContent,
-            draft_status: draftStatus,
-          }
-        };
-        $.ajax({
-          type: 'POST',
-          url: '<%= groupmsg_path %>',
-          contentType: 'application/json',
-          data: JSON.stringify(formData),
-          dataType: 'json',
-          headers: {
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          },
-        });
-      }
-      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft) {
-        var draftStatus = true;
-        var formData = {
-          id: draftedMessageId,
-          session: {
-            message: messageContent,
-            draft_status: draftStatus,
-          }
-        };
-        $.ajax({
-          url: '<%= update_groupmsg_path %>',
-          contentType: 'application/json',
-          type: 'POST',
-          dataType: 'json',
-          data: JSON.stringify(formData),
-          headers: {
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          }
-        });
-      }
-      else if (!isClickSendButton && messageContent.length === 0) {
-        $.ajax({
-          url: '<%= delete_groupmsg_path %>',
-          type: 'GET',
-          dataType: 'json',
-          data:{id: draftedMessageId},
-          headers: {
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          }
-        });
-      }
-      else if (isClickSendButton && draft_message_arr) {
-        var delete_draft_massage_id = draft_message_arr.id;
-        $.ajax({
-          url: '<%= delete_groupmsg_path %>',
-          type: 'GET',
-          dataType: 'json',
-          data:{id: delete_draft_massage_id},
-          headers: {
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          }
-        });
-      }
-    });
-
     // highlight start
     var isHighlighting = false;
 
@@ -202,11 +114,11 @@
     function toggleHighlight() {
       var format = quill.getFormat();
       if (format.highlight) {
-          quill.format('highlight', false);
-          isHighlighting = false;
+        quill.format('highlight', false);
+        isHighlighting = false;
       } else {
-          quill.format('highlight', true);
-          isHighlighting = true;
+        quill.format('highlight', true);
+        isHighlighting = true;
       }
       updateButtonText();
       quill.focus();
@@ -214,8 +126,8 @@
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
-        isHighlighting = !!format.highlight;
-        updateButtonText();
+      isHighlighting = !!format.highlight;
+      updateButtonText();
     });
 
     document.querySelector('#highlight-text').addEventListener('click', function() {
@@ -225,9 +137,9 @@
     });
 
     updateButtonText();
-    //highlight end 
+    //highlight end   
 
-    //highlight btn status 
+    // highlight btn status 
     quill.container.firstChild.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
         isHighlighting = false;
@@ -304,8 +216,14 @@
       quillContent.value = htmlContent;
     }
 
-    // for mention select
-    mention_names = [];
+    // for mention select 
+    var mention_names = [];
+    var mention_users =  <%= raw @mention_users.to_json %>;
+    mention_users.forEach(function(user) {
+      mention_names.push('@' + user);
+    });
+
+    $('.memtion_name').val(JSON.stringify(mention_names))
     $( "#editor" ).autocomplete({
         source: $('#editor').data('autocomplete-source'),
         position: {
@@ -317,7 +235,6 @@
         var range = quill.getSelection();
         range.value = ui.item.value
         mention_names.push(range.value)
-        $('.memtion_name').val(JSON.stringify(mention_names))
         // Check the text before the cursor
         var textBefore = quill.getText(range.index - 1, 1);
         if (textBefore === '@') {
@@ -327,14 +244,15 @@
         }
         quill.insertText(range.index, ui.item.label, "user");
         quill.setSelection(range.index + ui.item.label.length);
+        $('.memtion_name').val(JSON.stringify(mention_names));
       }
     });
-
+    
     quill.on('text-change', function(delta, oldDelta, source) {
       if (source === 'user') {
         const range = quill.getSelection();
         if (range) {
-          const textBefore = quill.getText(range.index - 1, 1);
+          const textBefore = quill.getText(range.index - 1 , 1);
           if (textBefore === '@') {
             // const bounds = quill.getBounds(range.index);
             $("#editor").autocomplete("option", "position", {
@@ -345,6 +263,18 @@
             $('#editor').val('@').focus().autocomplete('search', '@');
           }
         }
+        // Validate the index if it exists in mention_names
+        var currentText = quill.getText(0, quill.getLength());
+        mention_names.forEach(function(name, index) {
+          if (currentText.includes(name)) {
+            console.log(`Mention name "${name}" exists in the editor at index ${index}`);
+          } else {
+            console.log(`Mention name "${name}" does not exist in the editor`);
+            mention_names.splice(index, 1);
+          }
+        });
+        // Update the hidden input field with the filtered mention_names
+        $('.memtion_name').val(JSON.stringify(mention_names));
       }
     });
 
@@ -354,7 +284,7 @@
         if (source === 'user') {
           const range = quill.getSelection();
           if (range) {
-            const textBefore = quill.getText(range.index, 1);
+            const textBefore = quill.getText(range.index , 1);
             if (textBefore === '@') {
               // const bounds = quill.getBounds(range.index + 1);
               $("#editor").autocomplete("option", "position", {
@@ -365,8 +295,20 @@
               $('#editor').val('@').focus().autocomplete('search', '@');
             }
           }
-        }
-      });
+          // Validate the index if it exists in mention_names
+          var currentText = quill.getText(0, quill.getLength());
+          mention_names.forEach(function(name, index) {
+            if (currentText.includes(name)) {
+              console.log(`Mention name "${name}" exists in the editor at index ${index}`);
+            } else {
+              console.log(`Mention name "${name}" does not exist in the editor`);
+              mention_names.splice(index, 1);
+            }
+          });
+          // Update the hidden input field with the filtered mention_names
+          $('.memtion_name').val(JSON.stringify(mention_names));
+          }
+        });
       }
     });
 
@@ -382,6 +324,21 @@
       }
     });
 
+    // take value in text box
+    var data = '<%= j @data %>'
+    quill.clipboard.dangerouslyPasteHTML(data);
+    var length = quill.getLength();
+    quill.setSelection(length, length);
+
+    // cancle btn 
+    document.querySelector('.editcancle').addEventListener('click', function() {
+      document.querySelector('#gpmsgaction').value = 'cancel';
+    });
+
+    document.querySelector('#editgpmsg').addEventListener('click', function() {
+      document.querySelector('#gpmsgaction').value = 'send';
+    });
+
   });
-  
+
 </script>

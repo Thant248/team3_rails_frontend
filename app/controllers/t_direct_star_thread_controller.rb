@@ -27,7 +27,6 @@ class TDirectStarThreadController < ApplicationController
 
     if session[:s_direct_message_id].nil?
       unless session[:s_user_id].nil?
-       
         redirect_to t_direct_message_path(session[:s_direct_message_id])
       end
     elsif session[:s_user_id].nil?

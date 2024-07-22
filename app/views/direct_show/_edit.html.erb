@@ -23,16 +23,21 @@
           <button id="link-save">Yes</button>
         </div>
 
-        <%= form_for(:session, url: directmsg_path) do |f| %>
-          <div class="col-md-11" draftData="<%= @t_direct_messages.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
-            <div id="editor"></div>
-            <%= f.hidden_field :message, id: "quill-content" %>
-            <%= f.hidden_field :draft_status, value: false %>
-          </div>
-          <div class="col-md-1 mt-10">
-            <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
-          </div>
-        <% end %>
+        <div class="editmsg">
+          <%= form_for(:session, url: update_directmsg_path) do |f| %>
+            <div class="col-md-10">
+              <div id="editor"></div>
+                <%= f.hidden_field :message, id: "quill-content" %>
+                <%= hidden_field_tag :id, params[:id] %>
+                <%= hidden_field_tag :action_type, "", id: "action-type" %>
+            </div>
+            <div class="col-md-1 mt-10 arrange">
+              <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "editsend" %>
+              <button class="btn btn-secondary editcancle">Cancel</button>
+            </div>
+          <% end %>
+
+        </div>
 
         <div class="col-md-11">
           <span><i class="fas fa-plus"></i></span>
@@ -59,12 +64,13 @@
     }
 
     static formats(node) {
-      return node.getAttribute('class');
+      return node.classList.contains('highlight') ? 'highlight' : undefined;
     }
   }
 
   HighlightBlot.blotName = 'highlight';
   HighlightBlot.tagName = 'span';
+  HighlightBlot.className = 'highlight';
   Quill.register(HighlightBlot);
 
   //call quill
@@ -94,93 +100,6 @@
       placeholder: 'Type your message here ...',
       theme: 'snow'
     });
-    
-    var senderId = $('#form').data('sender-id');
-    var t_direct_messages = JSON.parse($('#form').attr('draftData'));
-    var draft_message_arr = t_direct_messages.find((t_direct_message)=>{
-      return (t_direct_message.send_user_id == senderId && t_direct_message.draft_message_status);
-    });
-    var isClickSendButton = false;
-    var isSaveDraft = true;
-    if (draft_message_arr != undefined ) {
-      var draftedMessage = draft_message_arr.directmsg;
-      var draftSenderId = draft_message_arr.send_user_id;
-      var draftedMessageId = draft_message_arr.id;
-      isSaveDraft = false;
-    }
-    quill.setContents([{
-      insert: draftedMessage,
-    }]);
-
-    document.querySelector('#send_btn').addEventListener('click', function() {
-      isClickSendButton = true;
-    });
-    
-    $(window).bind('beforeunload', () => {
-      var messageContent = quill.getText().trim();
-      if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
-        var draftStatus = true;
-        var formData = {
-          session: {
-            message: messageContent,
-            draft_status: draftStatus,
-          }
-        };
-        $.ajax({
-          type: 'POST',
-          url: '<%= directmsg_path %>',
-          contentType: 'application/json',
-          data: JSON.stringify(formData),
-          dataType: 'json',
-          headers: {
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          },
-        });
-      }
-      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft) {
-        var draftStatus = true;
-        var formData = {
-          id: draftedMessageId,
-          session: {
-            message: messageContent,
-            draft_status: draftStatus,
-          }
-        };
-        $.ajax({
-          url: '<%= update_directmsg_path %>',
-          contentType: 'application/json',
-          type: 'POST',
-          dataType: 'json',
-          data: JSON.stringify(formData),
-          headers: {
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          }
-        });
-      }
-      else if (!isClickSendButton && messageContent.length === 0) {
-        $.ajax({
-          url: '<%= delete_directmsg_path %>',
-          type: 'GET',
-          dataType: 'json',
-          data:{id: draftedMessageId},
-          headers: {
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          }
-        });
-      }
-      else if (isClickSendButton && draft_message_arr) {
-        var delete_draft_massage_id = draft_message_arr.id;
-        $.ajax({
-          url: '<%= delete_directmsg_path %>',
-          type: 'GET',
-          dataType: 'json',
-          data:{id: delete_draft_massage_id},
-          headers: {
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          }
-        });
-      }
-    });
 
     // highlight start
     var isHighlighting = false;
@@ -208,8 +127,8 @@
 
     quill.on('text-change', function() {
       var format = quill.getFormat();
-        isHighlighting = !!format.highlight;
-        updateButtonText();
+      isHighlighting = !!format.highlight;
+      updateButtonText();
     });
 
     document.querySelector('#highlight-text').addEventListener('click', function() {
@@ -219,8 +138,8 @@
     });
 
     updateButtonText();
-    // highlight end
-
+    // highlight end 
+        
     // highlight btn status 
     quill.container.firstChild.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
@@ -249,15 +168,14 @@
       document.getElementById('link-save').onclick = function() {
         const linkText = document.getElementById('link-name').value;
         const linkUrl = document.getElementById('link-url').value;
-        if (linkText && linkUrl && range) {      
+        if (linkText && linkUrl && range) {
         quill.insertText(range.index, linkText,'link',linkUrl);
           if (range.length > 0) {
             quill.deleteText(range.index + linkText.length, range.length);
           }
-            quill.setSelection(range.index + linkText.length, 0);
-
+          quill.setSelection(range.index + linkText.length, 0);
           hideLinkDialog();
-        } 
+        }
       };
 
       document.getElementById('link-cancel').onclick = function() {
@@ -289,7 +207,6 @@
     var form = document.querySelector('form');
     form.onsubmit = function() {
       var htmlContent = quill.getSemanticHTML();
-      console.log(quill.getSemanticHTML())
       var quillContent = document.querySelector('#quill-content');
       htmlContent = htmlContent.replace(/<pre([^>]*)data-language="plain"([^>]*)>([\s\S]*?)<\/pre>/g, function(match, attr1, attr2, content) {
         content = content.trim().replace(/\n/g, '<br>');
@@ -298,7 +215,6 @@
       htmlContent = htmlContent.replace(/<\/blockquote>\s*<blockquote>/g, '<br>');
       htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
       quillContent.value = htmlContent;
-      console.log(htmlContent)
     }
 
     // validate btn
@@ -313,6 +229,28 @@
       }
     });
 
-});
+    // take value in text 
+    // var data = '<%= j @data %>'
+    var data = '<%= j @data.html_safe %>';
+    data = data.replace(/<\/p><p>/g, '<pre>').replace(/<\/?p[^>]*>/g, '</pre>');
+    console.log(data)
+    // var data = '<p>Normal text <code>highlighted text</code></p>';
+    quill.clipboard.dangerouslyPasteHTML(data);
+    var tran = quill.root.innerHTML;
+    // console.log(tran)
+    console.log(data)
+    var length = quill.getLength();
+    quill.setSelection(length, length);
+
+    // cancle btn 
+    document.querySelector('.editcancle').addEventListener('click', function() {
+      document.querySelector('#action-type').value = 'cancel';
+    });
+
+    document.querySelector('#editsend').addEventListener('click', function() {
+      document.querySelector('#action-type').value = 'send';
+    });
+
+  });
 
 </script>

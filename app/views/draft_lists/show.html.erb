@@ -1,0 +1,63 @@
+<% provide(:title, 'Draft Messages') %>
+<div id="main">
+  <h1>All Draft Lists</h1>
+
+  <div>
+    <h2 class="style1">Direct Draft Messages</h2>
+    <% @count = 0 %>
+    <% @t_direct_messages.each do |t_direct_message| %>
+      <p class="style21"><%= @count += 1 %></p>
+      <p class="style22">
+        <%= t_direct_message['name']%>
+      </p>      
+      <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+      <div class="style3"> <%= render_html(t_direct_message['directmsg'])%></div>
+      <hr>
+    <% end %>
+  </div>
+
+  <div>
+    <h2 class="style1">Direct Draft Threads</h2>
+    <% @count = 0 %>
+    <% @t_direct_threads.each do |t_direct_thread| %>
+      <p class="style21"><%= @count += 1 %></p>
+
+      <p class="style22"><%= t_direct_thread['name']%></p>
+
+      <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+
+      <div class="style3">  <%= render_html(t_direct_thread['directthreadmsg'])%></div>
+      <hr>
+    <% end %>
+  </div>
+
+  <div>
+    <h2 class="style1">Group Draft Messages</h2>
+    <% @count = 0 %>
+    <% @t_group_messages.each do |t_group_message| %>
+      <h4 class="style2"><%= t_group_message['channel_name']%></h4>
+      <p class="style21"><%= @count += 1 %></p>
+      <p class="style22"><%= t_group_message['name']%></p>
+      <p class="style23"><%= (t_group_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+      <div class="style3">   <%= render_html(t_group_message['groupmsg'])%></div>
+      <p class="style24"></p>
+    <% end %>
+  </div>
+
+  <div>
+    <h2 class="style1">Group Draft Thread Messages</h2>
+    <% @count = 0 %>
+    <% @t_group_threads.each do |t_group_thread| %>
+      <h4 class="style2"><%= t_group_thread['channel_name']%></h4>
+      <p class="style21"><%= @count += 1 %></p>
+      <p class="style22"><%= t_group_thread['name']%></p>
+      <p class="style23"><%= (t_group_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+      <div class="style3">  <%= render_html(t_group_thread['groupthreadmsg'])%></div>
+      <p class="style24"></p>
+    <% end %>
+  </div>
+</div>
+
+<div>
+  <%= render 'leftpanel/leftpanel' %>
+</div>

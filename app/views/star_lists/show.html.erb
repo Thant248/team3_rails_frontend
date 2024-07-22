@@ -1,63 +1,111 @@
 <% provide(:title, 'Star') %>
 <div id="main">
+  <h1 style="margin-left: 200px;">Star Lists</h1>
 
-  <h1>Star Lists</h1>
+  <div class="tab-container" style="margin-bottom: 20px;">
+    <div class="tab2" style="max-width: 922px;">
+      <button class="tablinks star-tab" onclick="openTab(event, 'DirectStar')">Direct Star Lists</button>
+      <button class="tablinks star-tab" onclick="openTab(event, 'DirectThreadsStar')">Direct Threads Star Lists</button>
+      <button class="tablinks star-tab" onclick="openTab(event, 'GroupStar')">Group Star Lists</button>
+      <button class="tablinks star-tab" onclick="openTab(event, 'GroupThreadsStar')">Group Thread Star Lists</button>
+    </div>
+  </div>
 
-  <div>
-    <h2 class="style1">Direct Star Lists</h2>
-
-    <% @direct_star.each_with_index do |direct_star, index| %>
-      <p class="style21"><%= index + 1 %></p>
-      <p class="style22"><%= direct_star['name'] %></p>
-      <p class="style23"><%= (direct_star['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-      <p class="style24"></p> 
-      <%= link_to "",  "", class:'fas fa-star'%>
-      <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= direct_star['directmsg'] %></p>
-      <hr>
+  <div id="DirectStar" class="tabcontent">
+    <% if @direct_star.any? %>
+      <% @direct_star.each do |direct_star| %>
+        <% if direct_star['profile_image'].present? %>
+          <img src="<%= direct_star['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= direct_star['name'][0].upcase %>
+          </div>
+        <% end %>
+        <p class="style22"><%= direct_star['name'] %></p>
+        <p class="style23"><%= (direct_star['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+        <p class="style24"></p>
+        <%= link_to "", "", class:'fas fa-star' %>
+        <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(direct_star['directmsg']) %></div>
+        <hr>
+      <% end %>
+    <% else %>
+      <div class="no-data-container">
+        <p class="style2">No direct star message yet!</p>
+      </div>
     <% end %>
   </div>
 
-  <div>
-    <h2 class="style1">Direct Threads Star Lists</h2>
-
-    <% @direct_star_thread.each_with_index do |direct_star_thread, index| %>
-      <p class="style21"><%= index + 1 %></p>
-      <p class="style22"><%= direct_star_thread['name'] %></p>
-      <p class="style23"><%= (direct_star_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-      <p class="style24"></p> 
-      <%= link_to "",  "", class:'fas fa-star'%>
-      <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= direct_star_thread['directthreadmsg'] %></p>
-      <hr>
+  <div id="DirectThreadsStar" class="tabcontent">
+    <% if @direct_star_thread.any? %>
+      <% @direct_star_thread.each do |direct_star_thread| %>
+        <% if direct_star_thread['profile_image'].present? %>
+          <img src="<%= direct_star_thread['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= direct_star_thread['name'][0].upcase %>
+          </div>
+        <% end %>
+        <p class="style22"><%= direct_star_thread['name'] %></p>
+        <p class="style23"><%= (direct_star_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+        <p class="style24"></p>
+        <%= link_to "", "", class:'fas fa-star' %>
+        <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(direct_star_thread['directthreadmsg']) %></div>
+        <hr>
+      <% end %>
+    <% else %>
+      <div class="no-data-container">
+        <p class="style2">No direct thread star message yet!</p>
+      </div>
     <% end %>
   </div>
 
-  <div>
-    <h2 class="style1">Group Star Lists</h2>
-
-    <% @group_star.each_with_index do |group_star, index| %>
-      <h4 class="style2"><%= group_star['channel_name'] %></h4>
-      <p class="style21"><%= index + 1 %></p>
-      <p class="style22"><%= group_star['name'] %></p>
-      <p class="style23"><%= (group_star['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-      <p class="style24"></p> 
-      <%= link_to "",  "", class:'fas fa-star'%>
-      <p class="style3" style="word-wrap: break-word; width: 550px"> --> <span><%= group_star['groupmsg'] %></span></p>
-      <hr>
+  <div id="GroupStar" class="tabcontent">
+    <% if @group_star.any? %>
+      <% @group_star.each do |group_star| %>
+        <h4 class="style2"><%= group_star['channel_name'] %></h4>
+        <% if group_star['profile_image'].present? %>
+          <img src="<%= group_star['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= group_star['name'][0].upcase %>
+          </div>
+        <% end %>
+        <p class="style22"><%= group_star['name'] %></p>
+        <p class="style23"><%= (group_star['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+        <p class="style24"></p>
+        <%= link_to "", "", class:'fas fa-star' %>
+        <div class="style3" style="word-wrap: break-word; width: 550px"><span><%= render_html(group_star['groupmsg']) %></span></div>
+        <hr>
+      <% end %>
+    <% else %>
+      <div class="no-data-container">
+        <p class="style2">No group star message yet!</p>
+      </div>
     <% end %>
   </div>
 
-  <div>
-    <h2 class="style1">Group Thread Star Lists</h2>
-
-    <% @group_star_thread.each_with_index do |group_star_thread, index| %>
-      <h4 class="style2"><%= group_star_thread['channel_name'] %></h4>
-      <p class="style21"><%= index + 1 %></p>
-      <p class="style22"><%= group_star_thread['name'] %></p>
-      <p class="style23"><%= (group_star_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-      <p class="style24"></p> 
-      <%= link_to "",  "", class:'fas fa-star'%>
-      <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= group_star_thread['groupthreadmsg'] %></p>
-      <hr>
+  <div id="GroupThreadsStar" class="tabcontent">
+    <% if @group_star_thread.any? %>
+      <% @group_star_thread.each do |group_star_thread| %>
+        <h4 class="style2"><%= group_star_thread['channel_name'] %></h4>
+        <% if group_star_thread['profile_image'].present? %>
+          <img src="<%= group_star_thread['profile_image'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+        <% else %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= group_star_thread['name'][0].upcase %>
+          </div>
+        <% end %>
+        <p class="style22"><%= group_star_thread['name'] %></p>
+        <p class="style23"><%= (group_star_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+        <p class="style24"></p>
+        <%= link_to "", "", class:'fas fa-star' %>
+        <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(group_star_thread['groupthreadmsg']) %></div>
+        <hr>
+      <% end %>
+    <% else %>
+      <div class="no-data-container">
+        <p class="style2">No group thread star message yet!</p>
+      </div>
     <% end %>
   </div>
 
@@ -66,3 +114,24 @@
 <div>
   <%= render 'leftpanel/leftpanel' %>
 </div>
+
+<script>
+  function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.tablinks').click();
+  });
+</script>
+

@@ -1,66 +1,437 @@
-
 <div id="main">
-    <div>
+  <div>
     <div class="title">
-        <h2 class="style1"><%= @s_user['name']%> </h2>
+      <h2 style="margin-left: 250px;"><%= @s_user["name"] %> </h2>
     </div>
-
-        <hr>
-
-        <p class="style21">1</p>
-
-        <p class="style22"><%= @sender_name%></p>
-        
-         <p class="style23"><%= (@t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-                
-        <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= @t_direct_message['directmsg']%></p>
-
-    </div>
-<hr>
-    <div class="txtmsg">
-        <% @count = 0 %>
-        <h2 class="style1">Reply</h2>
-        <hr>
-        
-        <% @t_direct_threads.each do |t_direct_thread| %>
-
-            <p class="style21"><%= @count += 1 %></p>
-
-            <p class="style22"><%= t_direct_thread['name']%></p>
-
-            <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-
-            <p class="style24"></p>
-            
-            <% if @t_direct_star_thread_msgids.include? t_direct_thread['id'] %>
-                    <%= link_to "", unstarthread_path(:id => t_direct_thread['id']), class:'fas fa-star' %></li>
-                <% else %>
-                    <%= link_to "",  starthread_path(:id => t_direct_thread['id']), class:'far fa-star' %></li>
-            <% end %> 
-            
-            <%= link_to "",  delete_directthread_path(:id => t_direct_thread['id']), class:'glyphicon glyphicon-trash'%>
-            <p class="style3" style="word-wrap: break-word; width: 550px"> -->  <%= t_direct_thread['directthreadmsg']%></p>
-                
+    <hr>
+    <% if @send_user['image_url'].present? %>
+        <img src="<%= @send_user['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+      <% else %>
+        <div class="profile-placeholder" style="margin-left: 250px">
+          <%= @send_user['name'][0].upcase %>
+        </div>
+    <% end %>  
+    <p class="style22"><strong><%= @send_user['name'] %></strong></p>
+    <p class="style23"><%= (@t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+    <div class="style3" style="white-space: pre-wrap; word-wrap: break-word; width: 550px"> <%= render_html(@t_direct_message['directmsg'])%></div>
+  </div>
+  <hr>
+  <div class="txtmsg">
+    <% @count = 0 %>
+    <h2 class="style1">Reply</h2>
+    <hr>
+    <% @t_direct_threads.each do |t_direct_thread| %>
+      <% if !t_direct_thread['draft_message_status'] %>
+        <% if t_direct_thread['image_url'].present? %>
+        <img src="<%= t_direct_thread['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
+      <% else %>
+        <div class="profile-placeholder" style="margin-left: 250px">
+          <%= t_direct_thread['name'][0].upcase %>
+        </div>
+      <% end %>  
+        <p class="style22"><strong><%= t_direct_thread['name']%></strong></p>
+        <p class="style23"><%= (t_direct_thread['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+        <p class="style24"></p> 
+        <%= link_to "", "", class: "far fa-laugh-beam style22 emoji-button", data: { thread_id: t_direct_thread["id"] }, style: "text-decoration:none;" %>
+        <% if @t_direct_star_thread_msgids.include? t_direct_thread["id"] %>
+          <%= link_to "", unstarthread_path(:id => t_direct_thread["id"]), class: "fas fa-star style22" %></li>
+        <% else %>
+          <%= link_to "", starthread_path(:id => t_direct_thread["id"]), class: "far fa-star style22" %></li>
         <% end %>
-    </div>
+        <% if session[:m_user] == t_direct_thread["name"] %>
+          <%= link_to "", edit_directthreadmsg_path(id: t_direct_thread["id"]), class: "far fa-edit style22", id: "editbtn" %>
+        <% end %>
+        <% if session[:m_user] == t_direct_thread["name"] %>
+          <%= link_to "", delete_directthread_path(:id => t_direct_thread["id"]), class: "glyphicon glyphicon-trash style22" %>
+        <% end %>
+        <div class="style3" style="word-wrap: break-word; width: 550px"> <%= render_html(t_direct_thread["directthreadmsg"]) %></div>
+        <div class="reactionBox">
+          <% if @t_direct_react_thread_msgids.include? t_direct_thread["id"] %> <!-- Check if there is data in the table -->
+            <% userNames = [] %>
+            <% userIds = [] %>
+            <% @t_direct_thread_emojiscounts.each do |emoji_count| %>
+              <% if emoji_count["directthreadid"] == t_direct_thread["id"] %>
+                <% @react_usernames.each do |react_userName| %>
+                  <% if emoji_count["directthreadid"] == react_userName["directthreadid"] && emoji_count["emoji"] == react_userName["emoji"] %>
+                    <% if react_userName["name"] == @current_user["name"] %>
+                      <% userNames << "#{react_userName["name"]}(自分)" %>
+                    <% else %>
+                      <% userNames << react_userName["name"] %>
+                    <% end %>
+                    <% userIds << react_userName["userid"] %>
+                  <% end %>
+                <% end %>
+                <% if userIds.include? @current_user["id"] %>
+                  <button type="button" class="btnEmoji" id="emoji-buttons-<%= t_direct_thread["id"] %>" data-message-id="<%= t_direct_thread["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
+                    <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directthreadreact_path(thread_id: t_direct_thread["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
+                  </button>
+                <% else %>
+                  <button type="button" class="btnEmoji1" id="emoji-buttons-<%= t_direct_thread["id"] %>" data-message-id="<%= t_direct_thread["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
+                    <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directthreadreact_path(thread_id: t_direct_thread["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
+                  </button>
+                <% end %>
+              <% end %>
+              <% userNames = [] %>
+              <% userIds = [] %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
 </div>
 
-    <div class = "textboxbg">
-        <div class="textbox">
-            <%= form_for(:session, url: directthreadmsg_path) do |f| %>
-                <div class="col-md-11">
-                    <%= f.text_field :message, class: 'form-control' %>
-                </div>
-                <div class="col-md-1">
-                    <%= f.submit "Send", class: "btn btn-primary" %>
-                </div>
-            <% end %>
-        </div>
+<div class = "textboxbg">
+  <div class="textboxeditor">
+    <div id="toolbar">
+      <button class="ql-bold disable"></button>
+      <button class="ql-italic disable"></button>
+      <button class="ql-strike disable"></button>
+      <button class="ql-link disable"></button>
+      <button class="ql-list" value="ordered"></button>
+      <button class="ql-list" value="bullet"></button>
+      <button class="ql-blockquote"></button>
+      <button class="ql-code-block"></button>
+      <button id="highlight-text" class="btn-icon disable"><i class="fas fa-laptop-code"></i></button>
     </div>
+    <div id="link-dialog" style="display: none;">
+      <h3 id= "link-title">Add your link</h3>
+      <input type="text" id="link-name" placeholder="Enter link name">
+      <input type="text" id="link-url" placeholder="Enter URL">
+      <button id="link-cancel">Cancel</button>
+      <button id="link-save">Yes</button>
+    </div>
+    <%= form_for(:session, url: directthreadmsg_path) do |f| %>
+      <div class="col-md-11" draftData="<%= @t_direct_threads.to_json %>" data-sender-id = "<%= session[:current_user_id] %>" id="form">
+        <div id="editor"></div>
+        <%= f.hidden_field :message, id: "quill-content" %>
+      </div>
+      <div class="col-md-1 mt-10">
+        <%= f.hidden_field :draft_status, value: false %>  
+        <%= f.submit "Send", class: "btn btn-primary sendbtn", id: "send_btn" %>
+      </div>
+    <% end %>
+    <div class="col-md-11">
+      <span><i class="fas fa-plus"></i></span>
+      <button class="glyphicon glyphicon-font icon togglebtn" id="toggle-toolbar"></button>
+    </div>
+  </div>
+</div>
 <div>
-    <%= render 'leftpanel/leftpanel' %>
+  <%= render "leftpanel/leftpanel" %>
 </div>
 
 <script>
-    window.scrollTo(0,document.body.scrollHeight);
+  if (!sessionStorage.getItem('reloaded')) {
+    sessionStorage.setItem('reloaded', 'true');
+    location.reload();
+  }
+  // highlight
+  var Inline = Quill.import('blots/inline');
+  class HighlightBlot extends Inline {
+    static create(value) {
+      let node = super.create();
+      node.setAttribute('class', 'highlight');
+      return node;
+    }
+
+    static formats(node) {
+      return node.getAttribute('class');
+    }
+  }
+  HighlightBlot.blotName = 'highlight';
+  HighlightBlot.tagName = 'span';
+  Quill.register(HighlightBlot);
+
+  //call quill
+  document.addEventListener("DOMContentLoaded", function() {
+    const toolbarOptions = [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'strike'],
+      ['link'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['blockquote','code-block'],
+    ];
+
+    const quill = new Quill('#editor', {
+      modules: {
+        toolbar: {
+          container: '#toolbar',
+          handlers: {
+            link: function() {
+              const range = this.quill.getSelection();
+              if (range) {
+                showLinkDialog(range);
+              }
+            }
+          }
+        }
+      },
+      placeholder: 'Type your message here ...',
+      theme: 'snow'
+    });
+
+    var senderId = $('#form').data('sender-id');
+    var t_direct_threads = JSON.parse($('#form').attr('draftData'));
+    var draft_message_arr = t_direct_threads.find((t_direct_thread)=>{
+      return (t_direct_thread.m_user_id == senderId && t_direct_thread.draft_message_status);
+    });
+    var isClickSendButton = false;
+    var isSaveDraft = true;
+    if (draft_message_arr != undefined ) {
+      var draftedMessage = draft_message_arr.directthreadmsg;
+      var draftSenderId = draft_message_arr.m_user_id;
+      var draftedMessageId = draft_message_arr.id;
+      isSaveDraft = false;
+    }
+    quill.setContents([{
+      insert: draftedMessage,
+    }]);
+
+    document.querySelector('#send_btn').addEventListener('click', function() {
+      isClickSendButton = true;
+    });
+
+    $(window).bind('beforeunload', () => {
+      sessionStorage.removeItem('reloaded');
+      var messageContent = quill.getText().trim();
+      if (messageContent.length > 0 && !isClickSendButton && isSaveDraft) {
+        var draftStatus = true;
+        var formData = {
+          session: {
+            message: messageContent,
+            draft_status: draftStatus,
+          }
+        };
+        $.ajax({
+          type: 'POST',
+          url: '<%= directthreadmsg_path %>',
+          contentType: 'application/json',
+          data: JSON.stringify(formData),
+          dataType: 'json',
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+        });
+      }
+      else if (messageContent.length > 0 && !isClickSendButton && !isSaveDraft) {
+        var draftStatus = true;
+        var formData = {
+          id: draftedMessageId,
+          session: {
+            message: messageContent,
+            draft_status: draftStatus,
+          }
+        };
+        $.ajax({
+          url: '<%= update_directthreadmsg_path %>',
+          contentType: 'application/json',
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify(formData),
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+      else if (!isClickSendButton && messageContent.length === 0) {
+        $.ajax({
+          url: '<%= delete_directthread_path %>',
+          type: 'GET',
+          dataType: 'json',
+          data:{id: draftedMessageId},
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+      else if (isClickSendButton && draft_message_arr) {
+        var delete_draft_massage_id = draft_message_arr.id;
+        $.ajax({
+          url: '<%= delete_directthread_path %>',
+          type: 'GET',
+          dataType: 'json',
+          data:{id: delete_draft_massage_id},
+          headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+      }
+    });
+
+    // highlight start
+    var isHighlighting = false;
+    function updateButtonText() {
+      if (isHighlighting) {
+        document.querySelector('#highlight-text').classList.add('active');
+      } else {
+        document.querySelector('#highlight-text').classList.remove('active');
+      }
+    }
+
+    function toggleHighlight() {
+      var format = quill.getFormat();
+      if (format.highlight) {
+        quill.format('highlight', false);
+        isHighlighting = false;
+      } else {
+        quill.format('highlight', true);
+        isHighlighting = true;
+      }
+      updateButtonText();
+      quill.focus();
+    }
+
+    quill.on('text-change', function() {
+      var format = quill.getFormat();
+        isHighlighting = !!format.highlight;
+        updateButtonText();
+    });
+
+    document.querySelector('#highlight-text').addEventListener('click', function() {
+      toggleHighlight();
+      var htmlContent = quill.root.innerHTML;
+      document.querySelector('#quill-content').value = htmlContent;
+    });
+    updateButtonText();
+    // highlight end 
+
+    // highlight btn status 
+    quill.container.firstChild.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        isHighlighting = false;
+        updateButtonText();
+      }
+    });
+
+    // for link dialog 
+    var range = quill.getSelection();
+    quill.on('selection-change', function(range, oldRange, source) {
+      if (range && range.length > 0) {
+        var selectedText = quill.getText(range.index, range.length);
+        if (selectedText) {
+          $('#toolbar').removeClass("hidden");
+        }
+        $('#link-name').val(selectedText);
+      }
+    });
+
+    function showLinkDialog(range) {
+      document.getElementById('link-dialog').style.display = 'block';
+      document.getElementById('link-name').focus();
+      document.getElementById('link-save').onclick = function() {
+        const linkText = document.getElementById('link-name').value;
+        const linkUrl = document.getElementById('link-url').value;
+        if (linkText && linkUrl) {
+          quill.insertText(range.index, linkText,'link',linkUrl);
+          if (range.length > 0) {
+            quill.deleteText(range.index + linkText.length, range.length);
+          }
+          quill.setSelection(range.index + linkText.length, 0);
+          hideLinkDialog();
+        }
+      };
+      document.getElementById('link-cancel').onclick = function() {
+        hideLinkDialog();
+      };
+    }
+
+    function hideLinkDialog() {
+      document.getElementById('link-dialog').style.display = 'none';
+      document.getElementById('link-name').value = '';
+      document.getElementById('link-url').value = '';
+    }
+
+    // Prevent Quill from losing focus when clicking inside the dialog
+    document.getElementById('link-dialog').addEventListener('mousedown', function(event) {
+      event.stopPropagation();
+    });
+
+    // for toggle toolbar 
+    const toolbar = quill.getModule('toolbar');
+    const toolbarui = document.getElementById('toolbar');
+    const toggleButton = document.getElementById('toggle-toolbar');
+
+    toggleButton.addEventListener('click', function() {
+      toolbarui.classList.toggle('hidden');
+    });
+
+    var form = document.querySelector('form');
+    form.onsubmit = function() {
+      var htmlContent = quill.getSemanticHTML();
+      var quillContent = document.querySelector('#quill-content');
+      htmlContent = htmlContent.replace(/<pre([^>]*)data-language="plain"([^>]*)>([\s\S]*?)<\/pre>/g, function(match, attr1, attr2, content) {
+        content = content.trim().replace(/\n/g, '<br>');
+        return `<div${attr1}class="ql-code-block"${attr2}>${content}</div>`;
+      });
+      htmlContent = htmlContent.replace(/<\/blockquote>\s*<blockquote>/g, '<br>');
+      htmlContent = htmlContent.replace(/<\/p><p>/g, '<br>').replace(/<\/?p[^>]*>/g, '');
+      quillContent.value = htmlContent;
+    }
+
+    // validate btn
+    var sendbtn = document.querySelector(".sendbtn");
+    sendbtn.disabled = true;
+    quill.on('text-change', function(delta, oldDelta, source) {
+      const editorContent = quill.getText().trim();
+      if (editorContent.length > 0) {
+        sendbtn.disabled = false;
+      } else {
+        sendbtn.disabled = true;
+      }
+    });
+
+  });
+
+</script>
+
+<!-- emoji button -->
+<script>
+  window.scrollTo(0, document.body.scrollHeight);
+  document.addEventListener('DOMContentLoaded', () => {
+    const picker = new EmojiButton();
+    document.querySelectorAll('.emoji-button').forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        picker.togglePicker(button);
+        picker.on('emoji', emoji => {
+          var threadId = button.dataset.threadId;
+          return fetch('/directthreadreact', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+              emoji: emoji,
+              thread_id: threadId,
+            })
+          })
+          .then(response => {
+            console.log('Success:', response.status);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            else {
+              window.location.reload();
+            }
+          })
+          .then(data => {
+            console.log('Success:', data);
+            // Handle success, update UI accordingly
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            // Handle error, update UI accordingly
+          });
+        });
+      });
+    });
+    // Initialize all tooltips
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip(
+        {container:'body', trigger: 'hover', placement:"top"}
+      );
+    });
+  });
 </script>

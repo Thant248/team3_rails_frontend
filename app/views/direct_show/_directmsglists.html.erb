@@ -1,45 +1,150 @@
-<div class="txtmsg">  
+<div class="txtmsg">
   <% @count = 0 %>
   <div id="directlist">
-    <div class="title">      
-      <h2 class="style1"><%= @s_user['name'] %></h2>
+    <div class="title">
+      <% if @s_user['image_url'].present? %>
+        <img src="<%= @s_user['image_url'] %>" alt="Profile Image" class="d-profile-image">
+      <% else %>
+        <div class="profile-placeholder" style="margin-left: 250px">
+          <%= @s_user['name'][0].upcase %>
+        </div>
+      <% end %>      
+      <h2 style="margin-left: 290px;"><%= @s_user['name'] %></h2> 
     </div>
     
-    <div class="style1" style="padding-top: 80px">
-      <%= link_to "Load More", refresh_direct_url, class: 'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;' %>
+    <div class="load-mode-container">
+      <div class="style6" style="top: 126px;">
+        <%= link_to "Load More", refresh_direct_url, class: 'glyphicon glyphicon-refresh', style: 'word-spacing: -0.63em;' %>
+      </div>
     </div>
 
-    <% @t_direct_message_dates.each do |t_direct_date| %>
+    <div class="message-content" style="margin-top: 40px;">
+      <% @t_direct_message_dates.each do |t_direct_date| %>
       <h2 class="style1"><%= t_direct_date['created_date'] %></h2>
       <% 
       direct_messages_for_date = @t_direct_messages.select { |msg| msg['created_at'].to_date == Date.parse(t_direct_date['created_date']) } 
       # Check if direct_messages_for_date is correctly populated
       %>
       <% direct_messages_for_date.each do |t_direct_message| %>
-        <p class="style21"><%= @count += 1 %></p>
-        <p class="style22"><%= t_direct_message['name'] %></p> 
-
-        <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
-
-        <p class="style24"><%= link_to t_direct_message['count'], t_direct_message_path(id: t_direct_message['id']), class: 'fab fa-facebook-messenger' %></p>
-
-        <% if @t_direct_star_msgids.include?(t_direct_message['id']) %>
-          <%= link_to "", unstar_path(id: t_direct_message['id']), class: 'fas fa-star' %>
+        <% if !t_direct_message['draft_message_status'] %>
+          <% if t_direct_message['image_url'].present? %>
+          <img src="<%= t_direct_message['image_url'] %>" alt="Profile Image" class="profile-image" style="margin-left: 250px">
         <% else %>
-          <%= link_to "", star_path(id: t_direct_message['id']), class: 'far fa-star' %>
+          <div class="profile-placeholder" style="margin-left: 250px">
+            <%= t_direct_message['name'][0].upcase %>
+          </div>
         <% end %>
+          <p class="style22"><strong><%= t_direct_message['name'] %></strong></p>
+          <p class="style23"><%= (t_direct_message['created_at'].to_time + 9.hours).strftime("%F/%I:%M%p")%></p>
+          <p class="style24"><%= link_to t_direct_message['count'], t_direct_message_path(id: t_direct_message['id']), class: 'fab fa-facebook-messenger' %></p>
+          
+          <%= link_to "", "", class: "far fa-laugh-beam style22 emoji-button", data: { message_id: t_direct_message["id"] }, style: "text-decoration:none;" %>
 
-        <%= link_to "", delete_directmsg_path(id: t_direct_message['id']), class: 'glyphicon glyphicon-trash' %>
+          <% if @t_direct_star_msgids.include?(t_direct_message["id"]) %>
+            <%= link_to "", unstar_path(id: t_direct_message["id"]), class: "fas fa-star style22" %>
+          <% else %>
+            <%= link_to "", star_path(id: t_direct_message["id"]), class: "far fa-star style22" %>
+          <% end %>
 
-        <p class="style3" style="word-wrap: break-word; width: 550px"> --> <%= t_direct_message['directmsg'] %></p>
-        <hr>
+          <% if session[:m_user] == t_direct_message["name"] %>
+            <%= link_to "", edit_directmsg_path(id: t_direct_message["id"]), class: "far fa-edit style22", id: "editbtn" %>
+          <% end %>
+
+          <% if session[:m_user] == t_direct_message["name"] %>
+            <%= link_to "", delete_directmsg_path(id: t_direct_message["id"]), class: "glyphicon glyphicon-trash style22" %>
+          <% end %>
+
+          <div class="style3" style="word-wrap: break-word; width: 550px"><%= render_html(t_direct_message["directmsg"]) %></div>
+          
+          <div class="reactionBox">
+            <% if @t_direct_react_msgids.include? t_direct_message["id"] %> <!-- Check if there is data in the table -->
+              <% userNames = [] %>
+              <% userIds = [] %>
+              <% @t_direct_msg_emojiscounts.each do |emoji_count| %>
+                <% if emoji_count["directmsgid"] == t_direct_message["id"] %>
+                  <% @react_usernames.each do |react_userName| %>
+                    <% if emoji_count["directmsgid"] == react_userName["directmsgid"] && emoji_count["emoji"] == react_userName["emoji"] %>
+                      <% if react_userName["name"] == @current_user["name"] %>
+                          <% userNames << "#{react_userName["name"]}(自分)" %>
+                      <% else %>
+                          <% userNames << react_userName["name"] %>
+                      <% end %>
+                      <% userIds << react_userName["userid"] %>
+                    <% end %>
+                  <% end %>
+                  <% if userIds.include? @current_user["id"] %>
+                    <button type="button" class="btnEmoji" id="emoji-buttons-<%= t_direct_message["id"] %>" data-message-id="<%= t_direct_message["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
+                      <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directreact_path(message_id: t_direct_message["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
+                    </button>
+                  <% else %>
+                    <button type="button" class="btnEmoji1" id="emoji-buttons-<%= t_direct_message["id"] %>" data-message-id="<%= t_direct_message["id"] %>" data-toggle="tooltip" data-placement="top" title="<%= userNames.join(", ") %>がリアクションしました。">
+                      <%= link_to "#{emoji_count["emoji"]} #{emoji_count["emoji_count"]}", directreact_path(message_id: t_direct_message["id"].to_i, user_id: session[:current_user_id].to_i, emoji: emoji_count["emoji"]), style: "text-decoration:none;" %>
+                    </button>
+                  <% end %>
+                <% end %>
+                <% userNames = [] %>
+                <% userIds = [] %>
+              <% end %>
+            <% end %>
+          </div>
+          
+          <hr>
+        <% end %>
         
       <% end %>
-    <% end %>
+      <% end %>
+    </div>
+
   </div>
 </div>
 
+<!-- emoji button -->
 <script>
   window.scrollTo(0, document.body.scrollHeight);
-  
+  document.addEventListener('DOMContentLoaded', () => {
+    const picker = new EmojiButton();
+    document.querySelectorAll('.emoji-button').forEach(button => {
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        picker.togglePicker(button);
+        picker.on('emoji', emoji => {
+          var messageId = button.dataset.messageId;
+          return fetch('/directreact', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+              emoji: emoji,
+              message_id: messageId
+            })
+          })
+          .then(response => {
+            console.log('Success:', response.status);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            else {
+              window.location.reload();
+            }
+          })
+          .then(data => {
+            console.log('Success:', data);
+            // Handle success, update UI accordingly
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            // Handle error, update UI accordingly
+          });
+        });
+      });
+    });
+    // Initialize all tooltips
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip(
+        {container:'body', trigger: 'hover', placement:"top"}
+      );
+    });
+  });
 </script>
